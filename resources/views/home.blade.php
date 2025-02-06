@@ -12,14 +12,13 @@
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 ">
                         <div class="section_hedding mb-50">
                             <div class="section_title text-center aos-init aos-animate" data-aos="fade-left">
-                                <h5 class="highlight">Welcome to</small>
-                                <h2 class="text-white aos-init aos-animate" data-aos="fade-left">J-Unique Hair Braiding Salon</h1>
-                                    <p class="text-white aos-init aos-animate" data-aos="fade-bottom">Where Every Braids Tell Story</sup>
-                                
+                                <h5 class="highlight">Welcome to</h5>
+                                <h2 class="text-white aos-init aos-animate" data-aos="fade-left">J-Unique Hair Braiding Salon</h2>
+                                    <p class="text-white aos-init aos-animate" data-aos="fade-bottom">Where Every Braids Tell Story</p>
+
                             </div>
                             <div class="section_btn_area d-flex justify-content-center aos-init aos-animate" data-aos="fade-bottom">
-                                <a class="common_btn" href="/booking">
-                                    BOOK NOW</a>
+                                <a class="common_btn" href="{{ route('services') }}">Our Services</a>
                             </div>
                         </div>
                     </div>
@@ -33,14 +32,13 @@
                     <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 ">
                         <div class="section_hedding mb-50">
                             <div class="section_title text-center">
-                                <h5 class="highlight">Welcome to</small>
-                                <h2 class="text-white">J-Unique Hair Braiding Salon</h1>
-                                    <p class="text-white">Where Every Braids Tell Story</sup>
-                                
+                                <h5 class="highlight">Welcome to</h5>
+                                <h2 class="text-white">J-Unique Hair Braiding Salon</h2>
+                                    <p class="text-white">Where Every Braids Tell Story</p>
+
                             </div>
                             <div class="section_btn_area d-flex justify-content-center">
-                                <a class="common_btn" href="/booking">
-                                    BOOK NOW</a>
+                                <a class="common_btn" href="{{ route('services') }}">Our Services</a>
                             </div>
                         </div>
                     </div>
@@ -77,7 +75,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="https://www.instagram.com/juniquehairbraidingsalon/?utm_source=qr#" target="_blank"><i
+                                <a href="https://www.tiktok.com/@juniquehairbraidingsalon?_t=8ryGxXitF1C&_r=1" target="_blank"><i
                                         class="fab fa-tiktok"></i>
                                 </a>
                             </li>
@@ -114,7 +112,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="section_time_area">
                             <div class="time1">
                                 <p>Monday to Friday</p>
@@ -310,7 +308,7 @@
                             class="img-fluid"></a>
                 </div>
                 @endforeach
-                
+
             </div>
         </div>
     </div>

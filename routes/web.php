@@ -1,53 +1,60 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Middleware\CustomAuth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
-
-Route::get('/about', function () {
-    return view('about');
-})->name('about');
-
-Route::get('/services', function () {
-    return view('services');
-})->name('services');
-
-Route::get('/contact', function () {
-    return view('contact');
-})->name('contact');
-
-Route::get('/shop', function () {
-    return view('shop');
-})->name('shop');
-
-Route::get('/booking', function () {
-    return view('booking');
-})->name('booking');
-
-Route::get('/cart', function () {
-    return view('cart');
-})->name('cart');
-
-Route::get('/checkout', function () {
-    return view('checkout');
-})->name('checkout');
-
-Route::get('/product/{id}', function () {
-    return view('product');
-})->name('product');
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/about', [HomeController::class, 'about'])->name('about');
+Route::get('/gallery', [HomeController::class, 'gallery'])->name('gallery');
+Route::get('/contact', [HomeController::class, 'contact'])->name('contact');
+Route::post('/contact', [HomeController::class, 'contactPost'])->name('contact.post');
+Route::get('/services', [HomeController::class, 'services'])->name('services');
+Route::get('/services/{id}', [HomeController::class, 'serviceShow'])->name('service.show');
+Route::get('/terms-and-conditions', [HomeController::class, 'termsAndConditions'])->name('terms-and-conditions');
+Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
+//Route::get('/booking', [HomeController::class, 'booking'])->middleware(CustomAuth::class)->name('booking');
+Route::post('/booking', [HomeController::class, 'bookingPost'])->name('booking.post');
+Route::get('/shop', [HomeController::class, 'shop'])->name('shop');
+Route::get('/product/{id}', [HomeController::class, 'product'])->name('product');
 
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::middleware(CustomAuth::class)->group(function() {
+    Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
+    Route::post('/checkout/appointment', [HomeController::class, 'checkoutAppointmentPost'])->name('checkout.appointment.post');
+    Route::post('/checkout/order', [HomeController::class, 'checkoutOrderPost'])->name('checkout.order.post');
+    Route::get('/paypal/success', [HomeController::class, 'paypalSuccess'])->name('paypal.success');
+    Route::get('/paypal/cancel', [HomeController::class, 'paypalCancel'])->name('paypal.cancel');
+    Route::get('/wishlist', [HomeController::class, 'wishlist'])->name('wishlist');
+    Route::get('/wishlist', [HomeController::class, 'wishlistPost'])->name('wishlist.post');
+    Route::get('/cart', [HomeController::class, 'cart'])->name('cart');
+    Route::post('/cart', [HomeController::class, 'cartPost'])->name('cart.post');
+    Route::delete('/cart/delete/{id}', [HomeController::class, 'cartDelete'])->name('cart.delete');
+    Route::delete('/cart/clear', [HomeController::class, 'cartClear'])->name('cart.clear');
 
-Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/login', [AuthController::class, 'loginPost'])->name('login.post');
-Route::get('/register', [AuthController::class, 'register'])->name('register');
-Route::post('/register', [AuthController::class, 'registerPost'])->name('register.post');
 
-Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
-Route::post('/forgot-password', [AuthController::class, 'forgotPasswordPost'])->name('forgot-password.post');
-Route::get('/reset-password/{token}', [AuthController::class, 'resetPassword'])->name('reset-password');
+    Route::post('/review', [HomeController::class, 'reviewPost'])->name('review.post');
+
+
+});
+
+
+
+Route::group(['prefix' => 'auth'], function() {
+    Route::post('/logout', [AuthController::class, 'logout'])->middleware(CustomAuth::class)->name('logout');
+
+    Route::middleware('guest')->group(function() {
+        Route::get('/login', [AuthController::class, 'login'])->name('login');
+        Route::post('/login', [AuthController::class, 'loginPost'])->name('login.post');
+        Route::get('/register', [AuthController::class, 'register'])->name('register');
+        Route::post('/register', [AuthController::class, 'registerPost'])->name('register.post');
+        Route::get('/forgot-password', [AuthController::class, 'forgotPassword'])->name('forgot-password');
+        Route::post('/forgot-password', [AuthController::class, 'forgotPasswordPost'])->name('forgot-password.post');
+        Route::get('/reset-password/{token}', [AuthController::class, 'resetPassword'])->name('password.reset');
+        Route::post('/reset-password', [AuthController::class, 'resetPasswordPost'])->name('reset-password.post');
+    });
+});
+
+require __DIR__ . '/admin.php';
 

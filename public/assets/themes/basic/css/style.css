@@ -20,7 +20,7 @@
     --black:#000000;
     --dark_gray:#999999;
     --para_color:#a9a6a4;
-    --border_color1:#ffe4d9;
+    --border_color1:#ffd9eb;
     --border_color2:#f2f2f2;
     --border_color3:#e5e5e5;
     --border_color4:#c2c7cc;
@@ -3544,12 +3544,12 @@ height: 100vh;
 
 .paymentCheck {
     padding: 12px !important;
-    border: 2px solid #f37333;
+    border: 2px solid #0a6847;
     border-radius: 3px;
     position: relative;
 }
 .paymentCheck:hover {
-    border: 2px solid #f37333;
+    border: 2px solid #fc6098;
 }
 
 .paymentCheck:hover {

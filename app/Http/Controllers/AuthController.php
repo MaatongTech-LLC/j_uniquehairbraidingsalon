@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -29,7 +29,8 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials, $request->remember)) {
-            return redirect()->intended()->with('success', 'Logged in successfully');
+
+            return redirect()->route('admin.dashboard')->with('success', 'Logged in successfully');
         }
 
         return redirect()->back()->with('error', 'Invalid credentials!');

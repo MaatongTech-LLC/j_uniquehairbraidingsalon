@@ -4,15 +4,15 @@
             <div class="col-lg-3 col-md-6">
                 <div class="widget_logo_side">
                     <div class="logo_area">
-                        <a href="/"><img src="assets/uploads/logo/logo-white.png"
-                                alt="J-Unique Hair Braiding Salon">
+                        <a class="navbar-brand" href="{{ route('home') }}">
+                            <img class="logo" src="{{ asset('assets/uploads/logo/logo-white.png') }}" alt="J-Unique Hair Braiding Salon">
                         </a>
                     </div>
                 </div>
                 <div class="text_area">
                     <p class="pt-40 pb-45">If  you Are dreaming of a hairstyle that celebrates your unique beauty and cultural roots!</p>
                 </div>
-                <div class="submit_area">
+                {{--<div class="submit_area">
                     <form action="/subscribe" method="post">
                         <input type="hidden" name="_token" value="MBe24PfvnzEEqVfQ10qKJVYXJohecqu59unrkOyV">
                         <div class="mb-3 d-flex align-items-center justify-content-center">
@@ -22,7 +22,7 @@
                             </button>
                         </div>
                     </form>
-                </div>
+                </div>--}}
             </div>
             <div class="col-lg-3 col-md-6">
                 <div class="quick_link_area">

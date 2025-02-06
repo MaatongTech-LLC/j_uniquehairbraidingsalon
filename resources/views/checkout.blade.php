@@ -1,145 +1,287 @@
 @extends('layouts.main')
 @section('title', 'Checkout')
 @section('content')
-<div class="banner_area">
-    <div class="container">
-        <div class="row">
-            <div class="secion_header">
-                <h1 class="banner_title">Checkout</h1>
-            </div>
-            <div class="breadcrumb d-flex justify-content-center">
-                <div class="text_area">
-                    <h6><a href="{{ route('home')}}"><span>Home</span></a> |
-                        <span>Checkout</span></h6>
+    <div class="banner_area">
+        <div class="container">
+            <div class="row">
+                <div class="secion_header">
+                    <h1 class="banner_title">Checkout</h1>
+                </div>
+                <div class="breadcrumb d-flex justify-content-center">
+                    <div class="text_area">
+                        <h6><a href="{{ route('home')}}"><span>Home</span></a> |
+                            <span>Checkout</span></h6>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-<section class="checkout_area">
-    <form action="https://groomify.bugfinder.net/user/product-place-order" method="post" enctype="multipart/form-data">
-        <input type="hidden" name="_token" value="ZsDuBjPXdtMDV6SRUp2P0WqJbSuByMrnOXS6iyO4">            <div class="container">
-            <div class="row g-4">
-                <div class="col-md-8">
-                    <div class="section_left aos-init aos-animate" data-aos="fade-left">
-                        <div class="section_header">
-                            <h2>Shipping Information</h2>
-                        </div>
-                        <div class="billing_form_area">
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" name="first_name" value="" placeholder="First Name" autocomplete="off" fdprocessedid="6m83r">
-                                                                        </div>
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" name="last_name" value="" placeholder="Last Name" autocomplete="off" fdprocessedid="pgu8sq">
-                                                                        </div>
-                                <div class="col-md-12">
-                                    <input type="text" class="form-control" name="email" value="" placeholder="Email Address*" autocomplete="off" fdprocessedid="bhnpln">
-                                                                        </div>
-                                <div class="col-12">
-                                    <input type="text" class="form-control" name="phone" value="" placeholder="Phone Number*" autocomplete="off" fdprocessedid="vebrcm">
-                                                                        </div>
-                                <div class="col-12">
-                                    <input type="text" class="form-control" name="company_name" value="" placeholder="Company Name (optional)" autocomplete="off" fdprocessedid="m4gy3">
-                                                                        </div>
-                                <div class="col-md-12">
-                                    <select id="inputState" class="form-select" name="country" fdprocessedid="48vus">
-                                        <option selected="" disabled="">Your Country</option>
-                                        <option value="USA">USA</option>
-                                    </select>
-                                                                        </div>
-                                <div class="col-12">
-                                    <input type="text" class="form-control" name="street_address" value="" placeholder="Apartment, Street Address*" autocomplete="off" fdprocessedid="yi95l8">
-                                                                        </div>
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" name="state" value="" placeholder="State" autocomplete="off" fdprocessedid="wdn5">
-                                                                        </div>
-                                <div class="col-md-6">
-                                    <input type="text" class="form-control" name="postcode" value="" placeholder="Zip / Postcode*" fdprocessedid="6mup6g">
-                                                                        </div>
-                                <input class="form-control cartItemData" name="cartItem" type="hidden" autocomplete="off" value="[{&quot;id&quot;:4,&quot;name&quot;:&quot;Shampoo&quot;,&quot;price&quot;:250,&quot;count&quot;:1,&quot;image&quot;:&quot;https://groomify.bugfinder.net/assets/uploads/product/63d74a48b0ee71675053640.png&quot;,&quot;currency&quot;:&quot;$&quot;,&quot;quantity&quot;:1,&quot;attributes&quot;:[&quot;221&quot;],&quot;attributesName&quot;:&quot;[{\&quot;Weight\&quot;:\&quot;200ML\&quot;}]&quot;}]">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 product_checkout_summary">
-                    <div class="section_right aos-init aos-animate" data-aos="fade-right">
-                        <div class="billing_information">
-                            <ul class="billing_list_area mb-20">
-                                <li><span>Product</span> <span>Total</span></li>
-                                <div class="product_info"><li><span></span> <span>$0</span></li></div>
-                                <li>
-                                    <h6>Cart Subtotal</h6>
-                                    <h6>$<span class="total-cart"></span></h6>
-                                </li>
-                                <li>
-                                    <h6>(+) Tax Charge</h6>
-                                    <h6>$0.00</h6>
-                                </li>
-                                <li>
-                                    <h6>(+) Shipping Charge</h6>
-                                    <h6>$0.00</h6>
-                                </li>
-                                <li>
-                                    <h5>Total</h5>
-                                    <h5>$<span class="total-cart">0</span></h5>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container payment_section">
-            <div class="row g-4">
-                <div class="col-md-8">
-                    <div class="payment-methods mt-40">
-                        <div class="row gy-4 gx-3">
-                            <div class="col-12">
-                                <h4 class=" mb-20">Select Payment Method</h4>
-                                <div class="payment_method">
-                                    <input class="form-check-input" type="radio" id="cashon_delivery" name="payment_method" value="Cash On Delivery" checked="">
-                                    <label class="form-check-label" for="cashon_delivery">
-                                        Cash on Delivery                                        </label>
+    <section class="checkout_area">
+        @if(request('checkout_type') == 'products_order')
+            @php
+                $items = auth()->user()->cart()->with('product')->get();
+                $subtotal = 0;
+            @endphp
+            <form action="{{ route('checkout.order.post') }}" method="post">
+                @csrf
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-7">
+                            <div class="section_left aos-init aos-animate" data-aos="fade-left">
+                                <div class="section_header">
+                                    <h2>Billing / Shipping Information</h2>
                                 </div>
-                                <div class="payment-box mb-4">
-                                    <div class="payment-options">
-                                        <div class="row g-2">
-                                            <div class="col-4 col-md-3 col-xl-2">
-                                                <input type="radio" class="btn-check" name="options" id="option1" autocomplete="off">
-                                                <input type="hidden" name="gateway" value="">
-                                                <label class="paymentCheck" id="0" data-gateway="1" data-payment="1" data-plan="" for="option1">
-                                                    <img class="img-fluid custom___img" src="https://groomify.bugfinder.net/assets/uploads/gateway/5f637b5622d23.jpg" alt="gateway image">
-                                                    <i class="fa-solid fa-check check custom___check tag d-none" id="circle0"></i>
-                                                </label>
-                                            </div>  
-                                       </div>
+                                <div class="billing_form_area">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <input type="text" class="form-control" name="full_name" value="{{ auth()->user()->name }}"
+                                                   placeholder="Full Name" required>
+                                        </div>
+                                        @error('full_name') <small class="text-danger">{{ $message }}</small> @enderror
+
+
+                                        <div class="col-md-12">
+                                            <input type="text" class="form-control" name="email" value="{{ auth()->user()->email }}"
+                                                   placeholder="Email Address*" required>
+                                        </div>
+                                        <div class="col-12">
+                                            <input type="text" class="form-control" name="phone" value=""
+                                                   placeholder="Phone Number*" required>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <select id="inputState" class="form-select" name="country" required>
+                                                <option selected="" disabled="">Your Country</option>
+                                                <option value="USA">USA</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <input id="city" class="form-control" name="city" placeholder="City / Town*" required>
+
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="state" value=""
+                                                   placeholder="State*" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="postcode" value=""
+                                                   placeholder="Zip / Postcode*" required>
+                                        </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="common_btn" fdprocessedid="re3wf">PLACE ORDER</button>
+                            </div>
+                        </div>
+                        <div class="col-md-5 product_checkout_summary">
+                            <div class="section_right aos-init aos-animate" data-aos="fade-right">
+                                <div class="billing_information">
+                                    <ul class="billing_list_area mb-20">
+                                        <li><span>Product</span> <span>Total</span></li>
+                                        @foreach($items as $item)
+                                                @php
+                                                $subtotal += $item->product->price * $item->quantity;
+                                                @endphp
+                                            <div class="product_info">
+                                                <li class="d-flex align-items-center"><a href="{{ route('product', $item->product->id) }}">
+                                                        <img src="{{ $item->product->image ?? asset('assets/uploads/logo/meta.png') }}" height="80px" width="80px" alt="">
+                                                        <span>{{ $item->product->name }} x {{ $item->quantity }}</span>
+                                                    </a> <span>${{ ($item->product->price) * $item->quantity }}</span></li>
+                                            </div>
+                                        @endforeach
+                                        <li>
+                                            <h6>Cart Subtotal</h6>
+                                            <h6>$<span class="total">{{ $subtotal }}</span></h6>
+                                        </li>
+                                        <li>
+                                            <h6>(+) Shipping Charge</h6>
+                                            <h6>$0.00</h6>
+                                        </li>
+                                        <li>
+                                            <h5>Total</h5>
+                                            <h5>$<span class="">{{ $subtotal }}</span></h5>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
-                    <div class="section_right payment_info aos-init" data-aos="fade-right">
-                        <div class="payment-information box_shadow1  p-3 mb-5 bg-white rounded">
-                            <h4>Checkout Summary</h4>
-                            <ul class="payment_list_area">
-                                <li><span>Total Cart</span>
-                                    <span>$<span class="total-cart">250</span></span>
-                                </li>
-                                <li>Shipping <span class="shipping">$0.00</span></li>
-                                
-                                <li><span>Fixed Charge</span> <span class="fixed_charge"></span></li>
-                                <li><span>Total Amount</span> <span class="total_amount"></span></li>
-                            </ul>
+                <div class="container payment_section">
+                    <div class="row g-4">
+                        <div class="col-md-8">
+                            <div class="payment-methods mt-40">
+                                <div class="row gy-4 gx-3">
+                                    <div class="col-12">
+                                        <h4 class=" mb-20">Select Payment Method</h4>
+                                        <div class="payment-box mb-4">
+                                            <div class="payment-options">
+                                                <div class="row g-2">
+                                                    <input type="hidden" name="gateway" value="">
+                                                    <div class="col-4 col-md-3 col-xl-2">
+                                                        <label class="paymentCheck" id="0" data-gateway="paypal" data-payment="1"
+                                                               data-plan="" for="option1">
+                                                            <img class="img-fluid custom___img"
+                                                                 src="{{ asset('assets/uploads/gateway/paypal.jpg') }}"
+                                                                 alt="gateway image">
+                                                            <i class="fa-solid fa-check check custom___check tag"
+                                                               id="circle0"></i>
+                                                        </label>
+                                                    </div>
+                                                    {{--<div class="col-4 col-md-3 col-xl-2">
+                                                        <label class="paymentCheck" id="1" data-gateway="stripe" data-payment="2" data-plan="" for="option2">
+                                                            <img class="img-fluid custom___img" src="{{ asset('assets/uploads/gateway/stripe.jpg') }}" alt="gateway image">
+                                                            <i class="fa-solid fa-check check custom___check tag d-none" id="circle1"></i>
+                                                        </label>
+                                                    </div>--}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="total_price" value="{{ $subtotal }}">
+                                        <input type="hidden" name="user_id" value="{{ auth()->id() }}">
+
+                                        <button type="submit" class="common_btn">PAY NOW</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        @elseif(request('checkout_type') == 'appointment')
+
+            @php
+                $appointment = \App\Models\Appointment::with(['service'])->find(request('appointment_id'));
+            @endphp
+            <form action="{{ route('checkout.appointment.post') }}" method="post">
+                @csrf
+                <input type="hidden" name="appointment_id" value="{{ $appointment->id }}">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-7">
+                            <div class="section_left aos-init aos-animate" data-aos="fade-left">
+                                <div class="section_header">
+                                    <h2>Billing Information</h2>
+                                </div>
+                                <div class="billing_form_area">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <input type="text" class="form-control" name="full_name" value="{{ auth()->user()->name }}"
+                                                   placeholder="First Name" required>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <input type="text" class="form-control" name="email" value="{{ auth()->user()->email }}"
+                                                   placeholder="Email Address*" required>
+                                        </div>
+                                        <div class="col-12">
+                                            <input type="text" class="form-control" name="phone" value=""
+                                                   placeholder="Phone Number*" required>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <select id="inputState" class="form-select" name="country" required>
+                                                <option selected="" disabled="">Your Country</option>
+                                                <option value="USA">USA</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <input id="city" class="form-control" name="city" placeholder="City / Town*" required>
+
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="state" value=""
+                                                   placeholder="State*" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="postcode" value=""
+                                                   placeholder="Zip / Postcode*" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 product_checkout_summary">
+                            <div class="section_right aos-init aos-animate" data-aos="fade-right">
+                                <div class="billing_information">
+                                    <ul class="billing_list_area mb-20">
+                                        <li><span>Service Name</span> <span>Amount to pay</span></li>
+                                        <div class="product_info">
+                                            <li class="d-flex align-items-center"><a href="{{ route('service.show', $appointment->service->id) }}">
+                                                    <img src="{{ $appointment->service->getImage() }}" height="80px" width="80px" alt="">
+                                                    <span>{{ $appointment->service->name }}</span>
+                                                </a> <span>${{ $appointment->payment_type == 'deposit' ? $appointment->service->deposit_price :  $appointment->service->price}}</span></li>
+                                        </div>
+
+
+                                        <li>
+                                            <h5>Total</h5>
+                                            <h5>$<span class="">{{ $appointment->payment_type == 'deposit' ? $appointment->service->deposit_price :  $appointment->service->price}}</span></h5>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </form>
-</section>
+                <div class="container payment_section">
+                    <div class="row g-4">
+                        <div class="col-md-8">
+                            <div class="payment-methods mt-40">
+                                <div class="row gy-4 gx-3">
+                                    <div class="col-12">
+                                        <h4 class=" mb-20">Select Payment Method</h4>
+                                        <div class="payment-box mb-4">
+                                            <div class="payment-options">
+                                                <div class="row g-2">
+                                                    <input type="hidden" name="gateway" value="">
+                                                    <div class="col-4 col-md-3 col-xl-2">
+                                                        <label class="paymentCheck" id="0" data-gateway="paypal" data-payment="1"
+                                                               data-plan="" for="option1">
+                                                            <img class="img-fluid custom___img"
+                                                                 src="{{ asset('assets/uploads/gateway/paypal.jpg') }}"
+                                                                 alt="gateway image">
+                                                            <i class="fa-solid fa-check check custom___check tag"
+                                                               id="circle0"></i>
+                                                        </label>
+                                                    </div>
+                                                    {{--<div class="col-4 col-md-3 col-xl-2">
+                                                        <label class="paymentCheck" id="1" data-gateway="stripe" data-payment="2" data-plan="" for="option2">
+                                                            <img class="img-fluid custom___img" src="{{ asset('assets/uploads/gateway/stripe.jpg') }}" alt="gateway image">
+                                                            <i class="fa-solid fa-check check custom___check tag d-none" id="circle1"></i>
+                                                        </label>
+                                                    </div>--}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="common_btn">PAY NOW</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </form>
+        @endif
+
+    </section>
 @endsection
+
+@push('scripts')
+    <script>
+        $(document).on('click', '.paymentCheck', function() {
+            var id = this.id;
+            $('.tag').not(this).addClass('d-none');
+            $(`#circle${id}`).removeClass("d-none");
+
+
+            $("input[name='gateway']").val($(this).data('gateway'));
+
+            $('.paymentCheck').not(this).removeClass('paymentActive');
+            $(`#${id}`).addClass("paymentActive");
+
+
+        });
+    </script>
+@endpush
