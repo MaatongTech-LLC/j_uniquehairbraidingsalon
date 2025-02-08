@@ -28,16 +28,16 @@
 --}}
                         <div class="slick-list">
                             <div class="slick-track" style="opacity: 1; width: 1557px;"><img
-                                    src="https://groomify.bugfinder.net/assets/uploads/product/63d7509c4eea11675055260.png"
+                                    src="{{ $product->getImage() }}"
                                     alt="..." class="slick-slide" data-slick-index="0" aria-hidden="true"
                                     style="width: 519px; position: relative; left: 0px; top: 0px; z-index: 998; opacity: 0; transition: opacity 500ms;"
                                     tabindex="-1"><img
-                                    src="https://groomify.bugfinder.net/assets/uploads/product/63d7509c626351675055260.png"
+                                    src="{{ $product->getImage() }}"
                                     alt="..." class="slick-slide slick-current slick-active" data-slick-index="1"
                                     aria-hidden="false"
                                     style="width: 519px; position: relative; left: -519px; top: 0px; z-index: 999; opacity: 1;"
                                     tabindex="0"><img
-                                    src="https://groomify.bugfinder.net/assets/uploads/product/63d7509c750191675055260.png"
+                                    src="{{ $product->getImage() }}"
                                     alt="..." class="slick-slide" data-slick-index="2" aria-hidden="true"
                                     style="width: 519px; position: relative; left: -1038px; top: 0px; z-index: 998; opacity: 0; transition: opacity 500ms;"
                                     tabindex="-1"></div>
@@ -78,13 +78,14 @@
                     @csrf
                     <input id="prodcutId" type="hidden" name="product_id" value="{{ $product->id }}">
                     <input id="prodcutQty" type="hidden" name="quantity">
-                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
-
+                    @auth
+                        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+                    @endauth
                     <div class="section_right pt-30">
                         <div class="section_header">
                             <h2 class="text-capitalize">{{ $product->name }}</h2>
                             <h4 class="mb-30">Price : ${{ $product->price }}</h4>
-
+{{-- 
                             <h6 class="mb-20">
                             <span class="policy_icon">
                                 <i class="fas fa-undo product-icon"></i>
@@ -92,7 +93,7 @@
                                 30 Days Return Policy </h6>
                             <h6 class="pb-15">
                                 <span class="cash_icon"><i class="fas fa-dollar-sign product-icon"></i></span>
-                                Cash on Delivery Available </h6>
+                                Cash on Delivery Available </h6> --}}
                         </div>
                         <hr>
                         <div class="section_body">

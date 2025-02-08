@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\DataTables\OrdersDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    public function index()
+    public function index(OrdersDataTable $dataTable)
     {
-        return Order::with('user')->get();
+        return $dataTable->render('admin.orders.index');
     }
 
-    public function store(Request $request)
+    public function show(Request $request, $id)
     {
-        $validated = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'total_price' => 'required|numeric',
-        ]);
-        return Order::create($validated);
+        $order = Order::findOrFail($id);
+
+        return view('admin.orders.show', ['order' => $order]);
     }
 }

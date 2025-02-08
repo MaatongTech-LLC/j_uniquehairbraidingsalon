@@ -34,6 +34,8 @@
                 <div class="section_header">
                     <h2 class="mt-40">{{ $service->name }}</h2>
                     <h5 class="mb-20 highlight">${{ $service->price }}</h5>
+                    <h6 class="mb-20">{{ $service->duration }} h</h5>
+
                     <p>
                         {{ $service->description }}
                     </p>

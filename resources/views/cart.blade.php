@@ -60,15 +60,22 @@
                         <tbody>
                             @php
                                 $subtotal = 0;
+                                if(Auth::check()) {
+                                    $items = auth()->user()->cart()->with('product')->get();
+                                } else {
+                                    $items = collect(Session::get('cart', []));
+                                }
                             @endphp
                             @foreach($items as $item)
                                 @php
-                                    $subtotal .= number_format(floatval($item->product->price * $item->quantity), 2)
-                                 @endphp
+                                    if(is_array($item)) {
+                                             $item = (object) $item;
+                                    }
+                                @endphp
                                 <tr data-item="product" data-stock="{{ $item->product->stock }}" data-total="{{ floatval($item->product->price * $item->quantity) }}" data-price="{{ $item->product->price }}">
                                     <th scope="row">
                                         <div class="image_area"><img
-                                                src="https://groomify.bugfinder.net/assets/uploads/product/63eb22537a6971676354131.jpg"
+                                                src="{{ $item->product->getImage() }}"
                                                 alt=""></div>
                                     </th>
                                     <td>
@@ -95,7 +102,7 @@
                                     </td>
                                     <td>
                                         <div class="bin_area">
-                                            <form action="{{ route('cart.delete', $item->id) }}" method="post">
+                                            <form action="{{ route('cart.delete', $item->product->id) }}" method="post">
                                                 @method('DELETE')
                                                 @csrf
                                                 <button type="submit" class="cart_delete_btn"><i
@@ -119,9 +126,11 @@
                             <form action="{{ route('cart.clear') }}" method="post">
                                 @csrf
                                 @method('DELETE')
-                                <button class="common_btn d-flex align-items-center justify-content-center"
-                                        type="submit">CLEAR CART
-                                </button>
+                                @if (count($items) > 0)
+                                    <button class="common_btn d-flex align-items-center justify-content-center"
+                                    type="submit">CLEAR CART
+                                    </button>
+                                @endif
                             </form>
                         </div>
                     </div>
@@ -136,10 +145,17 @@
                                 <li><h5>Sub Total</h5><h5 id="subtotal">{{number_format((float)$subtotal, 2, '.', '')}}</h5></li>
                             </ul>
                             <div class="btn_area d-flex justify-content-end">
-                                <a href="{{ route('checkout', ['checkout_type' => 'products_order']) }}"
-                                                                                class="common_btn  d-flex justify-content-center align-items-center ">
-                                    PROCEED CHECKOUT
-                                </a>
+                                @if (count($items) > 0)
+                                    @auth
+                                    <a href="{{ route('checkout', ['checkout_type' => 'products_order']) }}"
+                                        class="common_btn common_btn_checkout ">checkout</a>
+
+                                    @endauth
+                                    @guest
+                                        <a href="{{ route('login') . '?next='. urlencode(route('checkout', ['checkout_type' => 'products_order'])) }}" class="common_btn  d-flex justify-content-center align-items-center common_btn_checkout ">PROCEED CHECKOUT</a>
+                                    @endguest
+                                    <a href="{{ route('checkout', ['checkout_type' => 'products_order']) }}"class="common_btn  d-flex justify-content-center align-items-center common_btn_checkout ">PROCEED CHECKOUT</a>
+                                @endif
                             </div>
                         </div>
                     </div>

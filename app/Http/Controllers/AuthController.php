@@ -30,7 +30,19 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials, $request->remember)) {
 
-            return redirect()->route('admin.dashboard')->with('success', 'Logged in successfully');
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.dashboard')->with('success', 'Logged in successfully');
+            }
+
+            if (Auth::user()->role === 'client') {
+
+                if ($request->has('next')) {
+                    return redirect($request->next);
+                }
+                return redirect()->intended()->with('success', 'Logged in successfully');
+            }
+
+            return redirect()->intended()->with('success', 'Logged in successfully');
         }
 
         return redirect()->back()->with('error', 'Invalid credentials!');

@@ -31,20 +31,16 @@
                     </div>
                     <div class="section_list">
                         <ul>
-                            <li><a href="/about">About Us</a></li>
-
-                            <li><a href="/blog">Blog</a></li>
+                            <li><a href="{{ route('about') }}">About Us</a></li>
 
                             <li class="nav-item"><a class="nav-link"
-                                    href="/faq">FAQ</a></li>
+                                    href="{{ route('faq') }}">FAQ</a></li>
 
                             <li>
-                                <a href="/terms-amp-conditions/">Terms &
+                                <a href="{{ route('terms-and-conditions') }}">Terms &
                                     Conditions</a>
                             </li>
-                            <li>
-                                <a href="/privacy-policy">Privacy Policy</a>
-                            </li>
+                            
                         </ul>
                     </div>
                 </div>

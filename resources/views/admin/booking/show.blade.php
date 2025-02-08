@@ -1,7 +1,7 @@
 @extends('admin.layouts.main')
 
 @section('title')
-    Booking {{ $appointment->service->name }}
+    Service Booked: {{ $appointment->service->name }}
 @endsection
 @section('content')
     <div class="container-fluid content-inner mt-n5 py-0">
@@ -10,7 +10,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between">
                         <div class="header-title">
-                            <h4 class="card-title">Service {{ $appointment->service->name }}</h4>
+                            <h4 class="card-title">Service Booked: {{ $appointment->service->name }}</h4>
                         </div>
                         <div class="d-flex justify-content-between align-items-center gx-2">
                             @if ($appointment->status === 'completed')
@@ -36,45 +36,144 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <div class="header-title">
-                            <h4 class="card-title">About Booking</h4>
-                        </div>
 
-                    </div>
+        <div class="row g-4">
+            <!--Main Invoice-->
+            <div class="col-xl-12 order-2 order-md-2 order-lg-2 order-xl-1">
+                <div class="card mb-4" id="section-1">
                     <div class="card-body">
-
-
-                        <div class="mt-2">
-                            <h6 class="mb-1">Amount ($):</h6>
-                            <p>{{ $appointment->payment->amount  }}
-                                {{ $appointment->payment->amount === $appointment->service->price ? '(Full Price)' : '(Deposit Price)' }}
-                            </p>
-                        </div>
-                        <div class="mt-2">
-                            <h6 class="mb-1">Client Name/Email:</h6>
-                            <p><a href="{{ route('admin.clients.show', $appointment->user->id) }}">{{ $appointment->user->name }}/{{ $appointment->user->email }}</a></p>
-                        </div>
-                        <div class="mt-2">
-                            <h6 class="mb-1">Date:</h6>
-                            <p>{{ $appointment->date }}</p>
-                        </div>
-
-                        <div class="mt-2">
-                            <h6 class="mb-1">Time:</h6>
-                            <div>
-                                {{ $appointment->time }}
+                        <!--Order Detail-->
+                        <div class="row justify-content-between align-items-center g-3 mb-4">
+                            <div class="col-auto flex-grow-1">
+                                <img src="{{ asset('assets/uploads/logo/logo.png') }}"
+                                    alt="logo" class="img-fluid" width="200">
+                            </div>
+                            <div class="col-auto text-end">
+                                <h5 class="mb-0">Invoice
+                                    <span class="text-accent"># - Booking{{ $appointment->id }}
+                                    </span>
+                                </h5>
+                                <span class="text-muted">Booked On:
+                                    {{ $appointment->created_at->format('d M, Y') }}
+                                </span>
+                                <br>
+                                {{-- <span class="text-muted">Delivery Date:
+                                    07 Feb, 2025
+                                </span> --}}
+                                <div>
+                                    <span class="text-muted">
+                                        <i class="las la-map-marker"></i>
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <div class="mt-2">
-                            <h6 class="mb-1">Booked On:</h6>
-                            <p>{{ $appointment->service->created_at->format('M d, Y') }}</p>
+                        <div class="row d-flex justify-content-md-between justify-content-center g-3">
+                            <div class="col-md-3">
+                                <!--Customer Detail-->
+                                <div class="welcome-message">
+                                    <h5 class="mb-2">Client Info</h5>
+                                    <p class="mb-0">Name: <strong>{{ $appointment->user->name }}</strong></p>
+                                    <p class="mb-0">Email: <strong>{{ $appointment->user->email }}</strong></p>
+                                    <p class="mb-0">Phone: <strong>{{ $appointment->user->getPhone() }}</strong></p>
+                                </div>
+                                <div class="col-auto mt-3">
+                                    <h6 class="d-inline-block">Payment Method: </h6>
+                                    <span class="badge bg-primary text-capitalize">{{ $appointment->payment->payment_method }}</span>
+                                    <br>
+                                    <br>
+                                    @if ($appointment->payment !== null)
+                                    <h6 class="d-inline-block">Payment Type: </h6>
+                                    <p>${{ $appointment->payment->amount   }}
+                                        {{ $appointment->payment->amount === $appointment->service->price ? '(Full Price)' : '(Deposit Price)' }}
+                                    </p>
+                                @endif
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="shipping-address d-flex justify-content-md-end mb-3">
+                                    <div class="w-25 ml-4">
+                                        <h5 class="mb-2 ml-4"></h5>
+                                        <p class="mb-0 text-wrap"></p>
+                                    </div>
+                                </div>    
+                                <div class="shipping-address d-flex justify-content-md-end mb-3">
+                                    <div class="w-25">
+                                        <h5 class="mb-2">Billing Address</h5>
+                                        <p class="mb-0 text-wrap">{{ $appointment->billing_address ?? 'Unknown' }}</p>
+                                    </div>
+                                    </div>    
+                                </div>
+                               
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!--order details-->
+                    <table class="table table-bordered border-top" data-use-parent-width="true">
+                        <thead>
+                            <tr>
+                                <th class="text-center" width="7%">#</th>
+                                <th>Service</th>
+                                <th class="text-end">Date</th>
+                                <th class="text-end">Time</th>
+                                <th class="text-end">Amount Paid</th>
+
+                            </tr>
+                        </thead>
+    
+                        <tbody>
+                            <tr>
+                                <td class="text-center">1</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div> <img
+                                                src="{{ $appointment->service->getImage()}}"
+                                                alt="{{ $appointment->service->name }}"
+                                                class="avatar avatar-50 rounded-pill">
+                                        </div>
+                                        <div class="ms-2">
+                                            <h6 class="fs-lg mb-0" style="max-width: 280px; white-space: normal;">{{ $appointment->service->name }}</h6>
+                                            <div class="text-muted">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td class="text-end">
+                                    <span class="fw-bold">{{ $appointment->date }}</span>
+                                </td>
+                                <td class="fw-bold text-end">{{ $appointment->time }}</td>
+
+                                <td class=" text-end">
+                                    <span class="text-accent fw-bold">$ {{ number_format($appointment->payment->amount, 2) }}</span>
+                                </td>
+
+                            </tr>
+                            
+                        </tbody>
+                        <tfoot class="text-end">
+                            <tr>
+                                <td colspan="4">
+                                    <h6 class="d-inline-block me-3">Grand Total: </h6>
+                                </td>
+                                <td width="10%" class="text-end"><strong class="text-accent">$ {{  number_format($appointment->payment->amount, 2) }}</strong>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+    
+                    <!--Note-->
+                    <div class="card-body">
+                        <div class="card-footer border-top-0 px-4 py-4 rounded bg-soft-gray border border-2">
+                            <p class="mb-0">Thank you for your appointment. Visit <a target="_blank" href="{{ route('terms-and-conditions')}}">Terms and conditions</a> page for our appointment policy</p>
                         </div>
                     </div>
                 </div>
             </div>
+    
         </div>
     </div>
 @endsection
@@ -95,8 +194,9 @@
                 <div class="modal-body">
                     <input type="hidden" name="booking_id" value="{{ $appointment->id }}">
                     <select name="status" class="form-control">
-                        <option value="confirmed" {{ $appointment->status === 'accepted'?'selected' : '' }}>Confirm</option>
-                        <option value="cancelled" {{ $appointment->status ==='rejected'?'selected' : '' }}>Cancel</option>
+                        <option value="confirmed" {{ $appointment->status === 'confirmed'?'selected' : '' }}>Confirm</option>
+                        <option value="completed" {{ $appointment->status === 'completed'?'selected' : '' }}>Completed</option>
+                        <option value="cancelled" {{ $appointment->status ==='cancelled'?'selected' : '' }}>Cancel</option>
                     </select>
                 </div>
                

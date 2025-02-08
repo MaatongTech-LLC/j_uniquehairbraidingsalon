@@ -17,7 +17,7 @@
                     <div class="card-body">
                         <div class="text-center">
                             <div class="user-profile">
-                                <h3 class="d-inline-block"><a href="{{ route('service.show', $service->id) }}" target="_blank">{{ $service->name }}</a></h3>
+                                <img src="{{ $service->getImage() }}" alt="profile-img" class="rounded-pill avatar-130 img-fluid">
                             </div>
                             <div class="mt-3">
                                 <h3 class="d-inline-block">{{ $service->name }}</h3>

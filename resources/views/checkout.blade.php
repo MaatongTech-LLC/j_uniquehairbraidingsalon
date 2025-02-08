@@ -19,10 +19,14 @@
 
     <section class="checkout_area">
         @if(request('checkout_type') == 'products_order')
-            @php
-                $items = auth()->user()->cart()->with('product')->get();
-                $subtotal = 0;
-            @endphp
+                @php
+                    if(Auth::check()) {
+                        $items = auth()->user()->cart()->with('product')->get();
+                    } else {
+                        $items = collect(Session::get('cart', []));
+                    }                
+                    $subTotal = 0;
+                @endphp
             <form action="{{ route('checkout.order.post') }}" method="post">
                 @csrf
                 <div class="container">
@@ -35,14 +39,14 @@
                                 <div class="billing_form_area">
                                     <div class="row g-3">
                                         <div class="col-md-12">
-                                            <input type="text" class="form-control" name="full_name" value="{{ auth()->user()->name }}"
+                                            <input type="text" class="form-control" name="full_name" value="@auth {{auth()->user()->name}} @endauth"
                                                    placeholder="Full Name" required>
                                         </div>
                                         @error('full_name') <small class="text-danger">{{ $message }}</small> @enderror
 
 
                                         <div class="col-md-12">
-                                            <input type="text" class="form-control" name="email" value="{{ auth()->user()->email }}"
+                                            <input type="text" class="form-control" name="email" value="@auth {{auth()->user()->email}} @endauth"
                                                    placeholder="Email Address*" required>
                                         </div>
                                         <div class="col-12">
@@ -78,9 +82,12 @@
                                     <ul class="billing_list_area mb-20">
                                         <li><span>Product</span> <span>Total</span></li>
                                         @foreach($items as $item)
-                                                @php
-                                                $subtotal += $item->product->price * $item->quantity;
-                                                @endphp
+                                            @php
+                                            if(is_array($item)) {
+                                                $item = (object) $item;
+                                            }
+                                            $subTotal += ($item->product->price * $item->quantity);
+                                            @endphp
                                             <div class="product_info">
                                                 <li class="d-flex align-items-center"><a href="{{ route('product', $item->product->id) }}">
                                                         <img src="{{ $item->product->image ?? asset('assets/uploads/logo/meta.png') }}" height="80px" width="80px" alt="">
@@ -90,7 +97,7 @@
                                         @endforeach
                                         <li>
                                             <h6>Cart Subtotal</h6>
-                                            <h6>$<span class="total">{{ $subtotal }}</span></h6>
+                                            <h6>$<span class="total">{{ $subTotal }}</span></h6>
                                         </li>
                                         <li>
                                             <h6>(+) Shipping Charge</h6>
@@ -98,7 +105,7 @@
                                         </li>
                                         <li>
                                             <h5>Total</h5>
-                                            <h5>$<span class="">{{ $subtotal }}</span></h5>
+                                            <h5>$<span class="">{{ $subTotal }}</span></h5>
                                         </li>
                                     </ul>
                                 </div>
@@ -123,20 +130,20 @@
                                                             <img class="img-fluid custom___img"
                                                                  src="{{ asset('assets/uploads/gateway/paypal.jpg') }}"
                                                                  alt="gateway image">
-                                                            <i class="fa-solid fa-check check custom___check tag"
+                                                            <i class="fa-solid fa-check check custom___check tag d-none"
                                                                id="circle0"></i>
                                                         </label>
                                                     </div>
-                                                    {{--<div class="col-4 col-md-3 col-xl-2">
+                                                    <div class="col-4 col-md-3 col-xl-2">
                                                         <label class="paymentCheck" id="1" data-gateway="stripe" data-payment="2" data-plan="" for="option2">
                                                             <img class="img-fluid custom___img" src="{{ asset('assets/uploads/gateway/stripe.jpg') }}" alt="gateway image">
                                                             <i class="fa-solid fa-check check custom___check tag d-none" id="circle1"></i>
                                                         </label>
-                                                    </div>--}}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <input type="hidden" name="total_price" value="{{ $subtotal }}">
+                                        <input type="hidden" name="total_price" value="{{ $subTotal }}">
                                         <input type="hidden" name="user_id" value="{{ auth()->id() }}">
 
                                         <button type="submit" class="common_btn">PAY NOW</button>
@@ -166,12 +173,12 @@
                                 <div class="billing_form_area">
                                     <div class="row g-3">
                                         <div class="col-md-12">
-                                            <input type="text" class="form-control" name="full_name" value="{{ auth()->user()->name }}"
+                                            <input type="text" class="form-control" name="full_name" value="@auth {{auth()->user()->name}} @endauth"
                                                    placeholder="First Name" required>
                                         </div>
 
                                         <div class="col-md-12">
-                                            <input type="text" class="form-control" name="email" value="{{ auth()->user()->email }}"
+                                            <input type="text" class="form-control" name="email" value="@auth {{auth()->user()->email}} @endauth"
                                                    placeholder="Email Address*" required>
                                         </div>
                                         <div class="col-12">
@@ -241,7 +248,7 @@
                                                             <img class="img-fluid custom___img"
                                                                  src="{{ asset('assets/uploads/gateway/paypal.jpg') }}"
                                                                  alt="gateway image">
-                                                            <i class="fa-solid fa-check check custom___check tag"
+                                                            <i class="fa-solid fa-check check custom___check tag d-none"
                                                                id="circle0"></i>
                                                         </label>
                                                     </div>
@@ -274,11 +281,14 @@
             var id = this.id;
             $('.tag').not(this).addClass('d-none');
             $(`#circle${id}`).removeClass("d-none");
+            $(this).css('border-color', '#fc6098');
 
 
             $("input[name='gateway']").val($(this).data('gateway'));
 
             $('.paymentCheck').not(this).removeClass('paymentActive');
+            $('.paymentCheck').not(this).css('border-color', '#0a6847');
+
             $(`#${id}`).addClass("paymentActive");
 
 

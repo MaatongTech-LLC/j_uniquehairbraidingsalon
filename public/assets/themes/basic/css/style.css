@@ -11,11 +11,11 @@
     --btn_bg1:#fc6098;
     --logo_color:#fc6098;
 
-    --bg_color2:#fff7f2;
+    --bg_color2:#fff2f8;
     --bg_color3:#f8f8f8;
     --bg_color4:#fafafa;
-    --bg_color5:#fef6f4;
-    --bg_color6:#f7e9e9;
+    --bg_color5:#fef4f9;
+    --bg_color6:#f7e9ef;
     --white:#ffffff;
     --black:#000000;
     --dark_gray:#999999;
@@ -2814,7 +2814,6 @@ margin: 10px 0px;
     background-color: var(--white);
 }
 .recent_blog_area .single_card_area{
-    background-color: var(--bg_color2);
     height: auto;
 }
 .recent_blog_area .single_card_area .card-body {

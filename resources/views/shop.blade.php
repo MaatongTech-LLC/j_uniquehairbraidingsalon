@@ -56,7 +56,7 @@
                                             </li>
                                         </ul>
                                         <div class="image_area">
-                                            <img src="https://groomify.bugfinder.net/assets/uploads/product/63d74aa556f521675053733.png"
+                                            <img src="{{ $product->getImage() }}"
                                                 alt="Hair Dyer">
                                         </div>
                                     </div>

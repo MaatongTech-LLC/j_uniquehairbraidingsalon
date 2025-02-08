@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\ContactMail;
-use App\Models\Appointment;
 use App\Models\Cart;
 use App\Models\Order;
-use App\Models\OrderItem;
+use App\Models\Review;
 use App\Models\Payment;
 use App\Models\Product;
-use App\Models\ProductCategory;
-use App\Models\Review;
 use App\Models\Service;
+use App\Mail\ContactMail;
+use App\Models\OrderItem;
+use App\Models\Appointment;
+use Illuminate\Http\Request;
+use App\Models\ProductCategory;
 use App\Models\ServiceCategory;
 use App\Services\PaymentService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 
@@ -101,43 +102,7 @@ class HomeController extends Controller
         return view('product', ['product' => $product]);
     }
 
-    public function cart()
-    {
-        $items = auth()->user()->cart()->with('product')->get();
-        return view('cart', ['items' => $items]);
-    }
 
-    public function cartPost(Request $request)
-    {
-        $validated = $request->validate([
-            'product_id' => 'required',
-            'quantity' => 'required',
-            'user_id' => 'required',
-        ]);
-
-        if (Cart::where('user_id', $validated['user_id'])->where('product_id', $validated['product_id'])->exists()) {
-            return redirect()->back()->with('error', 'This product is already in your cart!');
-        }
-
-        Cart::create($validated);
-
-        return redirect()->back()->with('success', 'Product added to cart successfully!');
-    }
-
-    public function cartDelete($id) {
-        Cart::destroy($id);
-
-        return redirect()->back()->with('success', 'Item deleted successfully');
-    }
-
-    public function cartClear() {
-        $items = auth()->user()->cart()->get();
-
-        foreach ($items as $item) {
-            $item->delete();
-        }
-        return redirect()->back()->with('success', 'Cart cleared successfully');
-    }
 
     public function checkout()
     {
@@ -351,7 +316,12 @@ class HomeController extends Controller
 
     public function gallery()
     {
-        return view('gallery');
+        $directory = public_path('assets/gallery-images');
+
+        $files = glob($directory . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+        
+        $images = array_map('basename', $files);
+        return view('gallery', ['images' => $images]);
     }
 
     public function faq()

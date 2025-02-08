@@ -88,30 +88,37 @@
                             href="{{ route('contact') }}">Contact</a>
                     </li>
                 </ul>
-
-                @auth
+                @php
+                    $subTotal = 0;
+                    if(Auth::check()) {
+                        $items = auth()->user()->cart()->with('product')->get();
+                    } else {
+                        $items = collect(Session::get('cart', []));
+                    }
+                @endphp
                     <div class="shopping-cart">
                         <button class="dropdown-toggle">
                             <i class="fal fa-shopping-cart"></i>
-                            <span class="count total">{{ auth()->user()->cart()->with('product')->count() }}</span>
+                            <span class="count total">{{ count($items) }}</span>
                         </button>
-                        <ul class="cart-dropdown">
+                        <ul class="cart-dropdown d-block">
                             <div class="dropdown-box">
-                                @php
-                                    $subTotal = 0;
-                                @endphp
-                                @foreach(auth()->user()->cart()->with('product')->get() as $item)
+                               
+                                @foreach($items as $item)
                                     @php
+                                        if(is_array($item)) {
+                                             $item = (object) $item;
+                                        }
                                         $subTotal += ($item->product->price * $item->quantity);
                                     @endphp
                                     <li>
                                         <a class="dropdown-item" href="javascript:void(0)">
-                                            <img src="https://groomify.bugfinder.net/assets/uploads/product/63eb22537a6971676354131.jpg" alt="">
+                                            <img src="{{ $item->product->getImage() }}" alt="">
                                             <div class="text">
                                                 <span class="text-capitalize">{{ $item->product->name }}</span><br>
                                                 <span class="price">Price: ${{ $item->product->price }}</span> <br>
                                                 <span class="quantity">Qty: {{ $item->quantity }}</span><br>
-                                                <form action="{{ route('cart.delete', $item->id) }}" method="post">
+                                                <form action="{{ route('cart.delete', $item->product_id) }}" method="post">
                                                     @method('DELETE')
                                                     @csrf
                                                     <button type="submit" class="close delete-item" data-name="{{ $item->product->name }}">
@@ -136,14 +143,19 @@
                                 <div class="d-flex justify-content-between mt-3">
                                     <a href="{{ route('cart') }}"
                                         class="common_btn common_btn_cart">cart</a>
-                                    <a href="{{ route('checkout', ['checkout_type' => 'products_order']) }}"
-                                        class="common_btn common_btn_checkout ">checkout</a>
+                                        @auth
+                                        <a href="{{ route('checkout', ['checkout_type' => 'products_order']) }}"
+                                            class="common_btn common_btn_checkout ">checkout</a>
+
+                                        @endauth
+                                        @guest
+                                            <a href="{{ route('login') . '?next='. urlencode(route('checkout', ['checkout_type' => 'products_order'])) }}" class="common_btn common_btn_checkout ">checkout</a>
+                                        @endguest
+                                    
                                 </div>
                             </div>
                         </ul>
                     </div>
-                @endauth
-
 
             </div>
         </div>

@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\HomeController;
 use App\Http\Middleware\CustomAuth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CartController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/about', [HomeController::class, 'about'])->name('about');
@@ -20,7 +21,14 @@ Route::get('/shop', [HomeController::class, 'shop'])->name('shop');
 Route::get('/product/{id}', [HomeController::class, 'product'])->name('product');
 
 
+Route::get('/cart', [CartController::class, 'cart'])->name('cart');
+Route::post('/cart', [CartController::class, 'cartPost'])->name('cart.post');
+Route::delete('/cart/delete/{id}', [CartController::class, 'cartDelete'])->name('cart.delete');
+Route::delete('/cart/clear', [CartController::class, 'cartClear'])->name('cart.clear');
+
 Route::middleware(CustomAuth::class)->group(function() {
+    // Route::middleware(CustomAuth::class)->post('/cart/merge', [CartController::class, 'mergeCart'])->name('cart.merge');
+
     Route::get('/checkout', [HomeController::class, 'checkout'])->name('checkout');
     Route::post('/checkout/appointment', [HomeController::class, 'checkoutAppointmentPost'])->name('checkout.appointment.post');
     Route::post('/checkout/order', [HomeController::class, 'checkoutOrderPost'])->name('checkout.order.post');
@@ -28,14 +36,7 @@ Route::middleware(CustomAuth::class)->group(function() {
     Route::get('/paypal/cancel', [HomeController::class, 'paypalCancel'])->name('paypal.cancel');
     Route::get('/wishlist', [HomeController::class, 'wishlist'])->name('wishlist');
     Route::get('/wishlist', [HomeController::class, 'wishlistPost'])->name('wishlist.post');
-    Route::get('/cart', [HomeController::class, 'cart'])->name('cart');
-    Route::post('/cart', [HomeController::class, 'cartPost'])->name('cart.post');
-    Route::delete('/cart/delete/{id}', [HomeController::class, 'cartDelete'])->name('cart.delete');
-    Route::delete('/cart/clear', [HomeController::class, 'cartClear'])->name('cart.clear');
-
-
     Route::post('/review', [HomeController::class, 'reviewPost'])->name('review.post');
-
 
 });
 
