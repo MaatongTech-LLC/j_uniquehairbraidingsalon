@@ -3,17 +3,23 @@
 namespace App\DataTables;
 
 use App\Models\Order;
-use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Yajra\DataTables\EloquentDataTable;
-use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 
 class OrdersDataTable extends DataTable
 {
+    public $userId;
+
+    public function __construct($userId = null) {
+        $this->userId = $userId;
+    }
     /**
      * Build the DataTable class.
      *
@@ -25,7 +31,7 @@ class OrdersDataTable extends DataTable
             ->rawColumns(['payment_status', 'actions'])
             
             ->addColumn('client', function(Order $order) {
-                return view('admin.orders.columns._client', compact('order'));
+                return view('customer.orders.columns._client', compact('order'));
             })
             ->addColumn('items', function(Order $order) {
                 return  $order->orderItems->count();
@@ -47,7 +53,12 @@ class OrdersDataTable extends DataTable
                 return $order->created_at->format('Y-m-d H:i');
             })
             ->addColumn('actions', function(Order $order) {
-                return sprintf('<a class="btn btn-sm btn-primary" href="%s">Show</a>', route('admin.orders.show', $order->id));
+                if (Auth::user()->role === 'admin') {
+                    return sprintf('<a class="btn btn-sm btn-primary" href="%s">Show</a>', route('admin.orders.show', $order->id));
+                }
+
+                return sprintf('<a class="btn btn-sm btn-primary" href="%s">Show</a>', route('customer.orders.show', $order->id));
+
             })
             ->setRowId('id');
     }
@@ -57,6 +68,10 @@ class OrdersDataTable extends DataTable
      */
     public function query(Order $model): QueryBuilder
     {
+        if ($this->userId !== null) {
+            return $model->newQuery()->where('user_id', $this->userId)->with(['orderItems', 'user', 'payment'])->latest();
+
+        }
         return $model->newQuery()->with(['orderItems', 'user', 'payment'])->latest();
     }
 

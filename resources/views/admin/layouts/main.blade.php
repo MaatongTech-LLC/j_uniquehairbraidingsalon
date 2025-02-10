@@ -54,7 +54,7 @@
                         <div class="flex-wrap d-flex justify-content-between align-items-center">
                             <div>
                                 <h1>Hello {{ auth()->user()->name }}</h1>
-                                <p>Welcome to your website administration panel.</p>
+                                <p>Welcome to your panel.</p>
                             </div>
 
                         </div>

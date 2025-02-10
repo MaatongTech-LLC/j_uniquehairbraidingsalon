@@ -10,15 +10,16 @@
             </div>
 
             <div class="col-md-4 ">
-                <div class="header_right d-flex justify-content-md-end justify-content-center align-items-center">
-                    <div class="language_select_area">
-                        <select class="form-select language">
-                            <option value="US" selected="">English</option>
-                            <option value="FR">French</option>
-                        </select>
-                    </div>
+                <div class="header_right d-flex justify-content-md-end justify-content-between align-items-center">
                     @auth
-                        <div class="login_area">
+                        @if (auth()->user()->role === 'admin')
+                            <a class="login_btn bg-white text-dark mr-2" href="{{ route('admin.dashboard') }}">Admin Panel</a>
+                        @else
+                           <a class="login_btn bg-white text-dark mr-2" href="{{ route('customer.dashboard') }}">My Account</a>    
+                        @endif
+                    @endauth
+                    @auth
+                        <div class="mx-2 login_area">
                             <form action="{{ route('logout') }}" method="post">
                                 @csrf
                                 <button type="submit" class="login_btn">Logout</button>

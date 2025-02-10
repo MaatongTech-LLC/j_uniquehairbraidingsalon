@@ -2,19 +2,26 @@
 
 namespace App\DataTables;
 
-use App\Models\Appointment;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder as QueryBuilder;
-use Yajra\DataTables\EloquentDataTable;
-use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use App\Models\Appointment;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
+use Illuminate\Support\Facades\Auth;
+use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
+use Yajra\DataTables\Html\Builder as HtmlBuilder;
+use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 
 class AppointmentsDataTable extends DataTable
 {
+
+    public $userId;
+
+    public function __construct($userId = null) {
+        $this->userId = $userId;
+    }
     /**
      * Build the DataTable class.
      *
@@ -64,7 +71,11 @@ class AppointmentsDataTable extends DataTable
                 return $appointment->created_at->format('Y-m-d');
             })
             ->addColumn('action', function(Appointment $appointment) {
-                return sprintf('<a class="btn btn-sm btn-primary" href="%s">Show</a>', route('admin.booking.show', $appointment->id));
+                if (Auth::user()->role === 'admin') {
+                    return sprintf('<a class="btn btn-sm btn-primary" href="%s">Show</a>', route('admin.booking.show', $appointment->id));
+                }
+                return sprintf('<a class="btn btn-sm btn-primary" href="%s">Show</a>', route('customer.booking.show', $appointment->id));
+
             })
             ->setRowId('id');
     }
@@ -74,6 +85,9 @@ class AppointmentsDataTable extends DataTable
      */
     public function query(Appointment $model): QueryBuilder
     {
+        if ($this->userId !== null) {
+            return $model->newQuery()->where('user_id', $this->userId)->with(['user', 'service'])->latest('id');
+        }
         return $model->newQuery()->with(['user', 'service'])->latest('id');
     }
 

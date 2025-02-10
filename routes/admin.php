@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\CustomAuth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProductController;
@@ -14,7 +15,7 @@ use App\Http\Controllers\Admin\UserController as ClientController;
 
 
 
-Route::group(['prefix' => 'administration'], function() {
+Route::group(['prefix' => 'administration', 'middleware' => [CustomAuth::class,  AdminMiddleware::class]], function() {
     Route::get('/', DashboardController::class)->name('admin.dashboard');
     // Clients routes
     Route::get('/clients', [ClientController::class, 'index'])->name('admin.clients.index');
@@ -71,6 +72,6 @@ Route::group(['prefix' => 'administration'], function() {
     // Payments routes
     Route::get('/payments', [PaymentController::class, 'index'])->name('admin.payments.index');
     Route::get('/payments/{id}', [PaymentController::class, 'show'])->name('admin.payments.show');
-})->middleware(CustomAuth::class);
+});
 
 

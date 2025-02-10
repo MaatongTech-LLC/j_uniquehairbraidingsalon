@@ -18,7 +18,7 @@
                                         </svg>
                                     </div>
                                     <div class="text-end">
-                                        Clients
+                                        Customers
                                         <h2 class="counter" style="visibility: visible;">{{ \App\Models\User::where('role', 'customer')->count() }}</h2>
                                     </div>
                                 </div>
