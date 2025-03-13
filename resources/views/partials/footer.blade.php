@@ -58,7 +58,7 @@
                             </li>
                             <li>
                                 <i class="far fa-envelope"></i>
-                                <span>contact@j-uniquehairbraidingsalon.com</span>
+                                <span>JUniqueHairBraidingSalon@gmail.com</span>
                             </li>
                             <li>
                                 <i class="fas fa-map-marker-alt"></i>

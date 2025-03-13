@@ -76,41 +76,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-5 product_checkout_summary">
-                            <div class="section_right aos-init aos-animate" data-aos="fade-right">
-                                <div class="billing_information">
-                                    <ul class="billing_list_area mb-20">
-                                        <li><span>Product</span> <span>Total</span></li>
-                                        @foreach($items as $item)
-                                            @php
-                                            if(is_array($item)) {
-                                                $item = (object) $item;
-                                            }
-                                            $subTotal += ($item->product->price * $item->quantity);
-                                            @endphp
-                                            <div class="product_info">
-                                                <li class="d-flex align-items-center"><a href="{{ route('product', $item->product->id) }}">
-                                                        <img src="{{ $item->product->image ?? asset('assets/uploads/logo/meta.png') }}" height="80px" width="80px" alt="">
-                                                        <span>{{ $item->product->name }} x {{ $item->quantity }}</span>
-                                                    </a> <span>${{ ($item->product->price) * $item->quantity }}</span></li>
-                                            </div>
-                                        @endforeach
-                                        <li>
-                                            <h6>Cart Subtotal</h6>
-                                            <h6>$<span class="total">{{ $subTotal }}</span></h6>
-                                        </li>
-                                        <li>
-                                            <h6>(+) Shipping Charge</h6>
-                                            <h6>$0.00</h6>
-                                        </li>
-                                        <li>
-                                            <h5>Total</h5>
-                                            <h5>$<span class="">{{ $subTotal }}</span></h5>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
                 <div class="container payment_section">

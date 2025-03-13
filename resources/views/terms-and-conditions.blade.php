@@ -48,7 +48,7 @@
                             <br>
                             
                             <h5>Contact Us</h5>
-                            <p>If you have any questions about this terms and conditions, please contact us at <a class="highlight" href="mailto:contact@j-uniquehairbraidingsalon.com">contact@j-uniquehairbraidingsalon.com</a></p><p></p>
+                            <p>If you have any questions about this terms and conditions, please contact us at <a class="highlight" href="mailto:JUniqueHairBraidingSalon@gmail.com">JUniqueHairBraidingSalon@gmail.com</a></p><p></p>
                     </div>
                 </div>
             </div>

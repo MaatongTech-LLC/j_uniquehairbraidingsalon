@@ -32,12 +32,15 @@ class HomeController extends Controller
     }
     public function index()
     {
-        return view('home');
+        $services = Service::all();
+
+
+        return view('new.home', ['services' => $services]);
     }
 
     public function about()
     {
-        return view('about');
+        return view('new.about');
     }
 
     public function booking(Request $request)
@@ -258,7 +261,7 @@ class HomeController extends Controller
     {
         $services = Service::with('category')->latest()->paginate(12);
 
-        return view('services', ['services' => $services]);
+        return view('new.services', ['services' => $services]);
     }
 
     public function serviceShow($id)
@@ -297,7 +300,7 @@ class HomeController extends Controller
             $items = $items->take(6);
         }
 
-        return view('service-show', ['service' => $service, 'services' => $items]);
+        return view('new.service-show', ['service' => $service, 'services' => $items]);
     }
 
     public function reviewPost(Request $request) {
@@ -319,9 +322,9 @@ class HomeController extends Controller
         $directory = public_path('assets/gallery-images');
 
         $files = glob($directory . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-        
+
         $images = array_map('basename', $files);
-        return view('gallery', ['images' => $images]);
+        return view('new.gallery', ['images' => $images]);
     }
 
     public function faq()

@@ -133,7 +133,7 @@
                             <h4>Email Address</h4>
                         </div>
                         <div class="section_body">
-                            <p>contact@j-uniquehairbraidingsalon.com</p>
+                            <p>JUniqueHairBraidingSalon@gmail.com</p>
                         </div>
                     </div>
                 </div>
