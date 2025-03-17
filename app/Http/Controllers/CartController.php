@@ -19,8 +19,8 @@ class CartController extends Controller
         } else {
             $items = collect(Session::get('cart', []));
         }
-        
-        return view('cart', ['items' => $items]);
+
+        return view('new.cart', ['items' => $items]);
     }
 
     public function cartPost(Request $request)
@@ -88,7 +88,7 @@ class CartController extends Controller
             Session::forget('cart');
         }
 
-        
+
         return redirect()->back()->with('success', 'Cart cleared successfully');
     }
 

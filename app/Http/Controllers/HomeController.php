@@ -11,6 +11,7 @@ use App\Models\Service;
 use App\Mail\ContactMail;
 use App\Models\OrderItem;
 use App\Models\Appointment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use App\Models\ServiceCategory;
@@ -75,22 +76,24 @@ class HomeController extends Controller
     {
         $products = Product::with('category')->latest();
 
-        if ($request->search) {
-            $products = Product::with('category')->where('name', 'LIKE', '%'.$request->search.'%')->latest();
+        if ($request->category_id) {
+            $products = Product::with('category')->where('product_category_id', $request->category_id)->latest();
         }
 
         if ($request->min_price && $request->max_price) {
             $products = $products->whereBetween('price', [$request->min_price, $request->max_price]);
         }
 
+        $showedCategories = $products->pluck('product_category_id')->toArray();
+
 
         $products = $products->paginate(16);
-        $categories = ProductCategory::whereIn('id', $products->pluck('category_id')->unique())->get();
+        $categories = ProductCategory::whereIn('id', $showedCategories)->get();
 
         $minPrice = Product::min('price');
         $maxPrice = Product::max('price');
 
-        return view('shop', [
+        return view('new.shop', [
             'categories' => $categories,
             'products' => $products,
             'minPrice' => $minPrice,
@@ -102,25 +105,45 @@ class HomeController extends Controller
     {
         $product = Product::findOrFail($id);
 
-        return view('product', ['product' => $product]);
+        return view('new.product', ['product' => $product]);
     }
 
 
 
     public function checkout()
     {
-        return view('checkout');
+        return view('new.checkout');
     }
 
     public function checkoutAppointmentPost(Request $request)
     {
         $validated = $request->validate([
-            'appointment_id' => 'required',
+            'service_id' => 'required',
+            'full_name' => 'required',
             'email' => 'required',
             'gateway' => 'required',
+            'date' => 'required|date',
+            'time' => 'required|date_format:H:i',
+            'payment_type' => 'required|string',
+
         ]);
 
-        $appointment = Appointment::find($validated['appointment_id']);
+        $user = Auth::user();
+
+        if (!$user) {
+            $user = User::factory()->create([
+                'email' => $validated['email'],
+                'name' => $validated['full_name'],
+            ]);
+        }
+
+        $appointment = Appointment::create([
+            'user_id' => $user->id,
+            'service_id' => $validated['service_id'],
+            'payment_type' => $validated['payment_type'],
+            'date' => $validated['date'],
+            'time' => $validated['time'],
+        ]);
 
         if ($validated['gateway'] === 'paypal') {
             $paymentUrl = $this->paymentService->processPayPal($appointment);
@@ -133,28 +156,36 @@ class HomeController extends Controller
 
         } elseif ($validated['gateway'] === 'stripe') {
 
+            return redirect()->back()->with('error', 'Credit/Debit Card unavailable for now!');
         }
     }
 
     public function checkoutOrderPost(Request $request)
     {
+
         $request->validate([
+            'full_name' => 'required',
             'email' => 'required|email',
             'gateway' => 'required',
-            'user_id' => 'required',
             'total_price' => 'required',
         ]);
 
         $user = Auth::user();
 
         if (!$user) {
-            return redirect()->route('login')->with('error', 'Please login to checkout.');
+            $user = User::factory()->create([
+                'email' => $request->email,
+                'name' => $request->full_name,
+            ]);
+
+            Auth::login($user);
         }
 
         $cartItems = $user->cart()->with('product')->get();
 
+
         if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Your cart is empty.');
+            return redirect()->route('cart')->with('error', 'Your cart is empty.');
         }
 
         $totalPrice = $cartItems->sum(function ($cartItem) {
@@ -192,14 +223,22 @@ class HomeController extends Controller
                     return redirect()->away($paymentUrl);
                 } else {
                     return redirect()->back()->with('error', 'Something went wrong while processing PayPal payment');
-                }            } else {
+                }
+            } else {
+                return redirect()->back()->with('error', 'Credit/Debit Card unavailable for now!');
+
                 $this->paymentService->processStripe($order, $request->payment_method_id);
             }
         } catch (\Exception $e) {
             DB::rollback();
+            dd($e->getMessage());
             return redirect()->route('cart')->with('error', 'Checkout failed: ' . $e->getMessage());
         }
 
+    }
+
+    public function success() {
+        return view('new.payment-success');
     }
 
     public function paypalSuccess(Request $request)
@@ -225,11 +264,12 @@ class HomeController extends Controller
                 }
             }
 
-            return redirect()->route('home')->with('success', 'Payment successful');
+            return redirect()->route('success')->with('success', 'Payment successful');
         } else {
             return redirect()->route('home')->with('error', 'Something went wrong!');
         }
     }
+
 
     public function paypalCancel(Request $request)
     {
@@ -238,7 +278,7 @@ class HomeController extends Controller
 
     public function contact()
     {
-        return view('contact');
+        return view('new.contact');
     }
 
     public function contactPost(Request $request)
@@ -307,6 +347,7 @@ class HomeController extends Controller
         $validated = $request->validate([
             'service_id' => 'required',
             'content' => 'required',
+            'rating' => 'required|int'
         ]);
 
         $validated['user_id'] = Auth::id();

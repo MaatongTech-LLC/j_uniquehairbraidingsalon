@@ -8,6 +8,7 @@
     <meta name="description" content="">
     <meta name="keywords" content="">
     <meta name="author" content="MaatongTech LLC">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Page Title -->
     <title>{{ config('app.name') }} - @yield('title')</title>
     <!-- Favicon Icon -->
@@ -32,6 +33,28 @@
     <link rel="stylesheet" href="{{ asset('hetch/css/mousecursor.css')}}">
     <!-- Main Custom Css -->
     <link href="{{ asset('hetch/css/custom.css')}}" rel="stylesheet" media="screen">
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+    @stack('styles')
+    @php
+        $subTotal = 0;
+        if(Auth::check()) {
+            $items = auth()->user()->cart()->with('product')->get();
+        } else {
+            $items = collect(Session::get('cart', []));
+        }
+    @endphp
+    <style>
+        .main-menu ul #cartLink > a:after {
+            content: '{{ count($items) }}';
+            font-weight: 900;
+            line-height: normal;
+            font-size: 14px;
+            margin-left: 8px;
+        }
+    </style>
+
 </head>
 <body>
 <!-- Preloader Start -->
@@ -46,8 +69,8 @@
 <!-- Topbar Section Start -->
 <div class="topbar">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-4 col-md-6">
+        <div class="row align-items-center justify-content-between">
+            <div class="col-lg-10 col-md-6 d-flex align-items-center">
                 <!-- Topbar Contact Information Start -->
                 <div class="topbar-contact-info">
                     <ul>
@@ -55,25 +78,33 @@
                         <li><a href="mailto:JUniqueHairBraidingSalon@gmail.com"><img src="{{ asset('hetch/images/icon-mail.svg')}}" alt="">JUniqueHairBraidingSalon@gmail.com</a></li>
                     </ul>
                 </div>
-                <!-- Topbar Contact Information End -->
-            </div>
-
-            <div class="col-lg-6 col-md-6">
-                <!-- Topbar Contact Information Start -->
-                <div class="topbar-offer">
-                    <p>If you Are dreaming of a hairstyle that celebrates your unique beauty and cultural roots!</p>
-                </div>
-                <!-- Topbar Contact Information End -->
-            </div>
-
-            <div class="col-lg-2 col-md-6">
-                <!-- Topbar Contact Information Start -->
-                <div class="topbar-time">
+                <div class="topbar-time mx-2">
                     <ul>
-                        <li><a href="{{ route('home') }}"><img src="{{ asset('hetch/images/icon-clock.svg') }}" alt="">Mon - Sun 7:00 - 22:00</a></li>
+                        <li><a href="{{ route('home') }}"><img src="{{ asset('hetch/images/icon-clock.svg') }}" alt="">Mon - Fri 7:00 AM - 10:00 PM | Sat 9:00 AM - 4:00 PM | Sun Closed</a></li>
                     </ul>
                 </div>
                 <!-- Topbar Contact Information End -->
+            </div>
+
+
+            <div class="col-lg-2 col-md-6">
+               <div class="d-flex align-items-center justify-content-end gap-2">
+                   @guest
+                       <a href="{{ route('login') }}" class="btn-simple" style="background-color: #FFF; color: #0a6847;">Login</a>
+                       <a href="{{ route('register') }}" class="btn-simple" style="background-color: #0a6847; color: #FFF;">Register</a>
+                   @endguest
+                   @auth
+                       @if(auth()->user()->role == 'admin')
+                               <a href="{{ route('admin.dashboard') }}" class="btn-simple" style="background-color: #FFF; color: #0a6847;">Admin Panel</a>
+                           @else
+                               <a href="{{ route('customer.dashboard') }}" class="btn-simple" style="background-color: #FFF; color: #0a6847;">My Account</a>
+                       @endif
+                       <form class="d-inline" action="{{ route('logout') }}" method="post">
+                           @csrf
+                           <button type="submit" class="btn-simple" style="background-color: #0a6847; color: #FFF;">Logout</button>
+                       </form>
+                   @endauth
+               </div>
             </div>
         </div>
     </div>
@@ -95,13 +126,43 @@
                 <div class="collapse navbar-collapse main-menu">
                     <div class="nav-menu-wrapper">
                         <ul class="navbar-nav mr-auto" id="menu">
-                            <li class="nav-item"><a class="nav-link active" href="{{ route('home') }}">Home</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('about') }}">About Us</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('services') }}">Services</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('shop') }}">Shop</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('gallery') }}">Gallery</a></li>
-                            <li class="nav-item"><a class="nav-link" href="{{ route('contact') }}">Contact</a></li>
-
+                            <li class="nav-item"><a class="nav-link" @if(request()->routeIs('home')) style="color: #0a6847;" @endif href="{{ route('home') }}">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" @if(request()->routeIs('about')) style="color: #0a6847;" @endif href="{{ route('about') }}">About Us</a></li>
+                            <li class="nav-item"><a class="nav-link" @if(request()->routeIs('services') || request()->routeIs('service.show')) style="color: #0a6847;" @endif href="{{ route('services') }}">Services</a></li>
+                            <li class="nav-item"><a class="nav-link" @if(request()->routeIs('shop')) style="color: #0a6847;" @endif href="{{ route('shop') }}">Shop</a></li>
+                            <li class="nav-item"><a class="nav-link" @if(request()->routeIs('gallery')) style="color: #0a6847;" @endif href="{{ route('gallery') }}">Gallery</a></li>
+                            <li class="nav-item"><a class="nav-link" @if(request()->routeIs('contact')) style="color: #0a6847;" @endif href="{{ route('contact') }}">Contact</a></li>
+                            <li id="cartLink" class="nav-item submenu"><a class="nav-link" href="#"><i class="fa-solid fa-cart-shopping"></i></a>
+                                <ul>
+                                    @foreach($items as $item)
+                                        @php
+                                            if(is_array($item)) {
+                                                 $item = (object) $item;
+                                            }
+                                            $subTotal += ($item->product->price * $item->quantity);
+                                        @endphp
+                                        <li style="color: white; display: flex; align-items: center; justify-content: space-between; padding: 0 8px; font-size: 12px;">
+                                            <img src="{{ $item->product->getImage() }}" width="50px" alt="{{ $item->product->name  }}">
+                                            <div class="text">
+                                                <span class="text-capitalize">{{ $item->product->name }}</span><br>
+                                                <span class="price">Price: ${{ $item->product->price }}</span> <br>
+                                                <span class="quantity">Qty: {{ $item->quantity }}</span><br>
+                                            </div>
+                                            <form action="{{ route('cart.delete', $item->product_id) }}" method="post">
+                                                @method('DELETE')
+                                                @csrf
+                                                <button title="Delete" type="submit" class="btn btn-sm" data-name="{{ $item->product->name }}">
+                                                    <i class="text-white fa-solid fa-times-circle"></i>
+                                                </button>
+                                            </form>
+                                        </li>
+                                    @endforeach
+                                    <li class="d-flex align-items-center justiffy-content-between">
+                                        <a href="{{ route('cart') }}" class="btn-default text-white">Cart</a>
+                                        <a href="{{ route('checkout') }}" class="btn-default text-white">Checkout</a>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                     <!-- Header Social Icons Start -->
@@ -197,7 +258,7 @@
                 <div class="about-footer">
                     <!-- Footer Logo Start -->
                     <div class="footer-logo">
-                        <img src="{{ asset('assets/uploads/logo/logo-white.png') }}" alt="">
+                        <img src="{{ asset('assets/uploads/logo/logo-white.png') }}" height="100px" width="200px" alt="">
                     </div>
                     <!-- Footer Logo End -->
 
@@ -228,6 +289,7 @@
                         <li><a href="{{ route('home') }}">home page</a></li>
                         <li><a href="{{ route('about') }}">about our company</a></li>
                         <li><a href="{{ route('gallery') }}">work gallery</a></li>
+                        <li><a href="{{ route('terms-and-conditions') }}">Our Policies</a></li>
                     </ul>
                 </div>
                 <!-- Footer Links End -->
@@ -244,7 +306,7 @@
                             <img src="{{ asset('hetch/images/icon-mail.svg') }}" alt="">
                         </div>
                         <div class="footer-contact-content">
-                            <p>info@domain.com</p>
+                            <p>JUniqueHairBraidingSalon@gmail.com</p>
                         </div>
                     </div>
                     <!-- Footer Contact Item End -->
@@ -327,6 +389,46 @@
 <script src="{{ asset('hetch/js/wow.min.js')}}"></script>
 <!-- Main Custom js file -->
 <script src="{{ asset('hetch/js/function.js')}}"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
+
+@stack('scripts')
+@if(session('success'))
+    <script>
+        $(document).ready(function() {
+            Toastify({
+                text: '{{session('success')}}',
+                duration: 3000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "right", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                    background: "#50c93d",
+                },
+                onClick: function(){} // Callback after click
+            }).showToast();
+        });
+    </script>
+@endif
+
+@if(session('error'))
+    <script>
+        $(document).ready(function() {
+            Toastify({
+                text: '{{session('error')}}',
+                duration: 3000,
+                close: true,
+                gravity: "top", // `top` or `bottom`
+                position: "right", // `left`, `center` or `right`
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+                style: {
+                    background: "#f50b42",
+                },
+                onClick: function(){} // Callback after click
+            }).showToast();
+        });
+    </script>
+@endif
 </body>
 </html>

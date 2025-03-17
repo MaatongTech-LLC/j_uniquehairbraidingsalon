@@ -31,7 +31,7 @@
                         <!-- Page Service Item Start -->
                         <div class="page-service-item wow fadeInUp" style="visibility: visible; animation-name: fadeInUp;">
                             <div class="page-service-image">
-                                <a href="{{ route('service.show', $service->id) }}" data-cursor-text="View">
+                                <a href="{{ route('service.show', $service->id) }}" data-cursor-text="Book">
                                     <figure class="image-anime">
                                         <img src="{{ $service->getImage() }}" alt="">
                                     </figure>
@@ -40,7 +40,14 @@
                             <div class="page-service-content">
                                 <h3>{{ $service->name }}</h3>
                                 <h6 class="my-3">${{ $service->price }}</h6>
-                                <a href="{{ route('service.show', $service->id) }}" class="btn-default">Book Now</a>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ route('service.show', $service->id) }}" class="btn-default">Details</a>
+                                    <form action="{{ route('checkout', ['checkout_type' => 'appointment']) }}" method="GET" class="form-inline">
+                                        @csrf
+                                        <input type="hidden" name="service_id" value="{{ $service->id }}">
+                                        <button type="submit" class="btn-default"><i class="fa-solid fa-calendar"></i></button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                         <!-- Page Service Item End -->

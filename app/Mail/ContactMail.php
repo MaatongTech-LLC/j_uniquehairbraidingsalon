@@ -30,7 +30,7 @@ class ContactMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address($this->data['email'], $this->data['name']),
+            from: new Address(env('MAIL_FROM_ADDRESS'), $this->data['name']),
             subject: 'Contact Mail',
         );
     }

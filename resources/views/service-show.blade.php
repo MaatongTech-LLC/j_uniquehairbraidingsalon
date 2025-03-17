@@ -53,15 +53,13 @@
                 <div class="tabs_area mt-60">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane"
-                                    type="button" role="tab" aria-controls="home-tab-pane" aria-selected="false"
-                                    fdprocessedid="akyljl" tabindex="-1">
-                                Description </button>
+                            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true" tabindex="-1">
+                                Description
+                            </button>
                         </li>
                         <li class="nav-item" role="presentation">
-                            <button class="nav-link active" id="profile-tab" data-bs-toggle="tab"
-                                    data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane"
-                                    aria-selected="true" fdprocessedid="bntkgah">
+                            <button class="nav-link" id="profile-tab" data-bs-toggle="tab"
+                                    data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane">
                                 Reviews
                             </button>
                         </li>
@@ -72,7 +70,7 @@
                             <div class="description_area">
                                 {{ $service->description }}</div>
                         </div>
-                        <div class="tab-pane fade accordion accordionExample active show" id="profile-tab-pane"
+                        <div class="tab-pane fade accordion accordionExample" id="profile-tab-pane"
                              role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
                             <div class="comment_area accordion-item">
                                 <div class="comment aos-init pb-1" data-aos="fade-up">

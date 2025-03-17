@@ -18,7 +18,7 @@ class AuthController extends Controller
         if ($request->error && $request->error == 1) {
             Session::flash('error', 'You have to login first for booking a service');
         }
-        return view('auth.login');
+        return view('new.auth.login');
     }
 
     public function loginPost(Request $request)
@@ -51,7 +51,7 @@ class AuthController extends Controller
 
     public function register()
     {
-        return view('auth.register');
+        return view('new.auth.register');
     }
 
     public function registerPost(Request $request)
@@ -59,6 +59,7 @@ class AuthController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'phone' => 'nullable|string|max:255',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
@@ -72,12 +73,12 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect()->route('login')->with('success', 'Logged out successfully');
+        return redirect()->back()->with('success', 'Logged out successfully');
     }
 
     public function forgotPassword()
     {
-        return view('auth.forgot-password');
+        return view('new.auth.forgot-password');
     }
 
     public function forgotPasswordPost(Request $request)
@@ -93,7 +94,7 @@ class AuthController extends Controller
 
     public function resetPassword($token)
     {
-        return view('auth.reset-password');
+        return view('new.auth.reset-password');
     }
 
     public function resetPasswordPost(Request $request)

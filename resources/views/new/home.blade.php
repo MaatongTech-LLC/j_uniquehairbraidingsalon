@@ -218,7 +218,7 @@
                 <div class="col-lg-6">
                     <!-- Section Title Content Start -->
                     <div class="section-title-content">
-                        <p class="wow fadeInUp" data-wow-delay="0.2s">We offer some of the best hairstyle and braids services you cold see!.</p>
+                        <p class="wow fadeInUp" data-wow-delay="0.2s">We offer some of the best hairstyle and braids services you could see!.</p>
                     </div>
                     <!-- Section Title Content End -->
                 </div>
@@ -284,137 +284,6 @@
     </div>
     <!-- Our Service Section End -->
 
-{{--
-    <!-- Our Work Section Start -->
-    <div class="our-work">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <!-- Our Work Image Start -->
-                    <div class="our-work-image">
-                        <div class="our-work-img-1">
-                            <figure class="image-anime reveal">
-                                <img src="images/our-work-img-1.jpg" alt="">
-                            </figure>
-                        </div>
-                        <div class="our-work-img-2">
-                            <figure class="image-anime reveal">
-                                <img src="images/our-work-img-2.jpg" alt="">
-                            </figure>
-                        </div>
-                    </div>
-                    <!-- Our Work Image End -->
-                </div>
-
-                <div class="col-lg-6">
-                    <!-- Our Work Content Start -->
-                    <div class="our-work-content">
-                        <!-- Section Title Start -->
-                        <div class="section-title">
-                            <h3 class="wow fadeInUp">why work with us</h3>
-                            <h2 class="text-anime-style-3" data-cursor="-opaque">Why we're the right choice for your home</h2>
-                            <p class="wow fadeInUp" data-wow-delay="0.2s">Partner with a company dedicated to excellence in window and door installations, ensuring each project is handled with precision and care.</p>
-                        </div>
-                        <!-- Section Title End -->
-
-                        <!-- Work Content Body Start -->
-                        <div class="work-content-body">
-                            <div class="our-work-list wow fadeInUp" data-wow-delay="0.4s">
-                                <ul>
-                                    <li>unmatched quality</li>
-                                    <li>expert craftsmanship</li>
-                                    <li>customized solutions</li>
-                                    <li>energy efficiency</li>
-                                </ul>
-                            </div>
-                            <div class="our-work-btn wow fadeInUp" data-wow-delay="0.6s">
-                                <a href="contact.html" class="btn-default">learn more</a>
-                            </div>
-                        </div>
-                        <!-- Work Content Body End -->
-
-                        <!-- Work Counters List Start -->
-                        <div class="work-counter-list">
-                            <div class="work-counter-item">
-                                <h3><span class="counter">98</span>%</h3>
-                                <p>successful client</p>
-                            </div>
-
-                            <div class="work-counter-item">
-                                <h3><span class="counter">1500</span>+</h3>
-                                <p>solutions delivered</p>
-                            </div>
-
-                            <div class="work-counter-item">
-                                <h3><span class="counter">12</span>+</h3>
-                                <p>years of experience</p>
-                            </div>
-                        </div>
-                        <!-- Work Counters List End -->
-                    </div>
-                    <!-- Our Work Content End -->
-                </div>
-
-                <div class="col-lg-12">
-                    <!-- Our Facilitity List Start -->
-                    <div class="work-facility-list">
-                        <!-- Our Facilitity Item Start -->
-                        <div class="work-facility-item wow fadeInUp">
-                            <div class="icon-box">
-                                <img src="images/icon-work-facility-1.svg" alt="">
-                            </div>
-                            <div class="work-facility-content">
-                                <h3>free shipping</h3>
-                                <p>Free shipping over $100</p>
-                            </div>
-                        </div>
-                        <!-- Our Facilitity Item End -->
-
-                        <!-- Our Facilitity Item Start -->
-                        <div class="work-facility-item wow fadeInUp" data-wow-delay="0.2s">
-                            <div class="icon-box">
-                                <img src="images/icon-work-facility-2.svg" alt="">
-                            </div>
-                            <div class="work-facility-content">
-                                <h3>payment secure</h3>
-                                <p>Get 100% payment safe</p>
-                            </div>
-                        </div>
-                        <!-- Our Facilitity Item End -->
-
-                        <!-- Our Facilitity Item Start -->
-                        <div class="work-facility-item wow fadeInUp" data-wow-delay="0.4s">
-                            <div class="icon-box">
-                                <img src="images/icon-work-facility-3.svg" alt="">
-                            </div>
-                            <div class="work-facility-content">
-                                <h3>support 24/7</h3>
-                                <p>Quality 24/7 support</p>
-                            </div>
-                        </div>
-                        <!-- Our Facilitity Item End -->
-
-                        <!-- Our Facilitity Item Start -->
-                        <div class="work-facility-item wow fadeInUp" data-wow-delay="0.6s">
-                            <div class="icon-box">
-                                <img src="images/icon-work-facility-4.svg" alt="">
-                            </div>
-                            <div class="work-facility-content">
-                                <h3>100% money back</h3>
-                                <p>Customers money back</p>
-                            </div>
-                        </div>
-                        <!-- Our Facilitity Item End -->
-                    </div>
-                    <!-- Our Facilitity List End -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Our Work Section End -->
---}}
-
-
     <!-- Work Gallery Section Start -->
     <div class="work-gallery">
         <div class="container">
@@ -442,7 +311,7 @@
                     <!-- Work Gallery Item Start -->
                     <div class="work-gallery-item wow fadeInUp">
                         <div class="work-gallery-img">
-                            <a href="#" data-cursor-text="View">
+                            <a href="{{ asset('assets/uploads/services/1.jpg') }}" data-cursor-text="View">
                                 <figure class="image-anime">
                                     <img src="{{ asset('assets/uploads/services/1.jpg') }}" alt="">
                                 </figure>
@@ -459,7 +328,7 @@
                     <!-- Work Gallery Item Start -->
                     <div class="work-gallery-item wow fadeInUp">
                         <div class="work-gallery-img">
-                            <a href="#" data-cursor-text="View">
+                            <a href="{{ asset('assets/uploads/services/2.jpg') }}" data-cursor-text="View">
                                 <figure class="image-anime">
                                     <img src="{{ asset('assets/uploads/services/2.jpg') }}" alt="">
                                 </figure>
@@ -476,7 +345,7 @@
                     <!-- Work Gallery Item Start -->
                     <div class="work-gallery-item wow fadeInUp">
                         <div class="work-gallery-img">
-                            <a href="#" data-cursor-text="View">
+                            <a href="{{ asset('assets/uploads/services/3.jpg') }}" data-cursor-text="View">
                                 <figure class="image-anime">
                                     <img src="{{ asset('assets/uploads/services/3.jpg') }}" alt="">
                                 </figure>
@@ -489,12 +358,15 @@
                     <!-- Work Gallery Item End -->
                 </div>
             </div>
+            <div class="mt-2 d-flex justify-content-center">
+                <a href="{{ route('gallery') }}" class="btn-default">Show More</a>
+            </div>
         </div>
     </div>
     <!-- Work Gallery Section End -->
 
     <!-- Our Client Testimonial Start -->
-    <div class="our-testimonial parallaxie">
+    <div class="our-testimonial parallaxie" style="background-image: url(&quot;{{ asset('assets/uploads/content/about-section-img2.jpg') }}&quot;); background-size: cover; background-repeat: no-repeat; background-attachment: fixed; background-position: center -106.467px;">
         <div class="container">
             <div class="row section-row align-items-center">
                 <div class="col-lg-6">
@@ -527,7 +399,7 @@
                                         <div class="testimonial-header">
                                             <div class="testimonial-quote-img">
                                                 <figure>
-                                                    <img src="images/quote-img.svg" alt="">
+                                                    <img src="{{ asset('hetch/images/quote-img.svg') }}" alt="">
                                                 </figure>
                                             </div>
                                             <div class="testimonial-rating">
@@ -544,7 +416,7 @@
                                         <div class="testimonial-author">
                                             <div class="author-image">
                                                 <figure class="image-anime">
-                                                    <img src="images/author-1.jpg" alt="">
+                                                    <img src="{{ asset('hetch/images/author-1.jpg') }}" alt="">
                                                 </figure>
                                             </div>
                                             <div class="author-content">
@@ -561,7 +433,7 @@
                                         <div class="testimonial-header">
                                             <div class="testimonial-quote-img">
                                                 <figure>
-                                                    <img src="images/quote-img.svg" alt="">
+                                                    <img src="{{ asset('hetch/images/quote-img.svg') }}" alt="">
                                                 </figure>
                                             </div>
                                             <div class="testimonial-rating">
@@ -578,7 +450,7 @@
                                         <div class="testimonial-author">
                                             <div class="author-image">
                                                 <figure class="image-anime">
-                                                    <img src="images/author-2.jpg" alt="">
+                                                    <img src="{{ asset('hetch/images/author-2.jpg') }}" alt="">
                                                 </figure>
                                             </div>
                                             <div class="author-content">
@@ -595,7 +467,7 @@
                                         <div class="testimonial-header">
                                             <div class="testimonial-quote-img">
                                                 <figure>
-                                                    <img src="images/quote-img.svg" alt="">
+                                                    <img src="{{ asset('hetch/images/quote-img.svg') }}" alt="">
                                                 </figure>
                                             </div>
                                             <div class="testimonial-rating">
@@ -612,7 +484,7 @@
                                         <div class="testimonial-author">
                                             <div class="author-image">
                                                 <figure class="image-anime">
-                                                    <img src="images/author-3.jpg" alt="">
+                                                    <img src="{{ asset('hetch/images/author-3.jpg') }}" alt="">
                                                 </figure>
                                             </div>
                                             <div class="author-content">
@@ -629,7 +501,7 @@
                                         <div class="testimonial-header">
                                             <div class="testimonial-quote-img">
                                                 <figure>
-                                                    <img src="images/quote-img.svg" alt="">
+                                                    <img src="{{ asset('hetch/images/quote-img.svg') }}" alt="">
                                                 </figure>
                                             </div>
                                             <div class="testimonial-rating">
@@ -646,7 +518,7 @@
                                         <div class="testimonial-author">
                                             <div class="author-image">
                                                 <figure class="image-anime">
-                                                    <img src="images/author-4.jpg" alt="">
+                                                    <img src="{{ asset('hetch/images/author-4.jpg') }}" alt="">
                                                 </figure>
                                             </div>
                                             <div class="author-content">

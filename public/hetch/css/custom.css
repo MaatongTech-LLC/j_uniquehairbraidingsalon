@@ -1,6 +1,4 @@
 /* ----------------------------------------------------------------------------------------
-* Author        : Awaiken
-* Template Name : Hetch - Windows and Doors HTML Template
 * File          : CSS File
 * Version       : 1.0
 * ---------------------------------------------------------------------------------------- */
@@ -188,6 +186,20 @@ body{
 .row.no-gutters > *{
     padding-right: 0px;
     padding-left: 0px;
+}
+
+
+.btn-simple{
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1em;
+    text-transform: capitalize;
+    border-radius: 0;
+    padding: 17px 30px;
+    border: none;
+    transition: all 0.6s ease-in-out;
+    z-index: 1;
 }
 
 .btn-default{
@@ -2395,6 +2407,10 @@ header.main-header .header-sticky.active{
 	cursor: none;
 }
 
+.page-service-image figure {
+    border-radius: 60px 0;
+}
+
 .page-service-image figure::before{
 	content: '';
 	position: absolute;
@@ -3252,9 +3268,8 @@ header.main-header .header-sticky.active{
 }
 
 .project-single-image img{
-	width: 100%;
-    aspect-ratio: 1 / 0.54;
-    object-fit: cover;
+	width: 75%;
+    object-fit: contain;
 }
 
 .project-info,
