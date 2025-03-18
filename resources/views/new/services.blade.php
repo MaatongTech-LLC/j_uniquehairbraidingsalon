@@ -44,6 +44,7 @@
                                     <a href="{{ route('service.show', $service->id) }}" class="btn-default">Details</a>
                                     <form action="{{ route('checkout', ['checkout_type' => 'appointment']) }}" method="GET" class="form-inline">
                                         @csrf
+                                        <input type="hidden" name="checkout_type" value="appointment">
                                         <input type="hidden" name="service_id" value="{{ $service->id }}">
                                         <button type="submit" class="btn-default"><i class="fa-solid fa-calendar"></i></button>
                                     </form>

@@ -12,6 +12,7 @@ use App\Mail\ContactMail;
 use App\Models\OrderItem;
 use App\Models\Appointment;
 use App\Models\User;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use App\Models\ServiceCategory;
@@ -128,7 +129,8 @@ class HomeController extends Controller
 
         ]);
 
-        $user = Auth::user();
+        $user = User::where('email', $validated['email'])->first();
+
 
         if (!$user) {
             $user = User::factory()->create([
@@ -155,22 +157,27 @@ class HomeController extends Controller
             }
 
         } elseif ($validated['gateway'] === 'stripe') {
+            $paymentStatusStripe = $this->paymentService->processStripe($appointment, $request->stripeToken);
 
-            return redirect()->back()->with('error', 'Credit/Debit Card unavailable for now!');
+            if ($paymentStatusStripe === 'succeeded') {
+                return redirect()->route('success', $appointment->id)->with('success', 'Credit/Debit card payment successful');
+            } else {
+                return redirect()->back()->with('error', 'Something went wrong while processing card payment');
+            }
         }
     }
 
     public function checkoutOrderPost(Request $request)
     {
 
-        $request->validate([
+        $validated = $request->validate([
             'full_name' => 'required',
             'email' => 'required|email',
             'gateway' => 'required',
             'total_price' => 'required',
         ]);
 
-        $user = Auth::user();
+        $user = User::where('email', $validated['email'])->first();
 
         if (!$user) {
             $user = User::factory()->create([
@@ -178,8 +185,10 @@ class HomeController extends Controller
                 'name' => $request->full_name,
             ]);
 
-            Auth::login($user);
         }
+
+        Auth::login($user);
+        event(new Login("web", $user, false));
 
         $cartItems = $user->cart()->with('product')->get();
 
@@ -225,13 +234,16 @@ class HomeController extends Controller
                     return redirect()->back()->with('error', 'Something went wrong while processing PayPal payment');
                 }
             } else {
-                return redirect()->back()->with('error', 'Credit/Debit Card unavailable for now!');
+                $paymentStatusStripe = $this->paymentService->processStripe($order, $request->stripeToken);
 
-                $this->paymentService->processStripe($order, $request->payment_method_id);
+                if ($paymentStatusStripe === 'succeeded') {
+                    return redirect()->route('success', $order->id)->with('success', 'Credit/Debit card payment successful');
+                } else {
+                    return redirect()->back()->with('error', 'Something went wrong while processing card payment');
+                }
             }
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e->getMessage());
             return redirect()->route('cart')->with('error', 'Checkout failed: ' . $e->getMessage());
         }
 

@@ -72,7 +72,7 @@
                 }
                 $subTotal = 0;
             @endphp
-            <form action="{{ route('checkout.order.post') }}" method="post">
+            <form id="checkoutForm" action="{{ route('checkout.order.post') }}" method="post">
                 @csrf
                 <div class="container">
                     <div class="row">
@@ -141,6 +141,13 @@
                                         </div>
                                     </div>
 
+                                    <div id="stripeCard" class="d-none py-3">
+                                        <!-- Stripe Card Element container -->
+                                        <div class="form-group" id="card-element"></div>
+                                        <!-- Error Message -->
+                                        <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+                                    </div>
+
                                     <input type="hidden" name="total_price" value="{{ $subTotal }}">
                                     <input type="hidden" name="user_id" value="{{ auth()->id() }}">
 
@@ -181,11 +188,11 @@
                 </div>
 
             </form>
-        @else
+        @elseif(request('checkout_type') == 'appointment')
             @php
                 $service = \App\Models\Service::find(request('service_id'));
             @endphp
-            <form action="{{ route('checkout.appointment.post') }}" method="post">
+            <form id="bookingForm" action="{{ route('checkout.appointment.post') }}" method="post">
                 @csrf
                 <div class="container">
                     <div class="row">
@@ -251,6 +258,12 @@
                                                        required value="stripe">
                                             </label>
                                         </div>
+                                    </div>
+                                    <div id="stripeCard" class="d-none py-3">
+                                        <!-- Stripe Card Element container -->
+                                        <div class="form-group" id="card-element"></div>
+                                        <!-- Error Message -->
+                                        <div id="card-errors" role="alert" class="text-danger mt-2"></div>
                                     </div>
 
                                     <input type="hidden" name="service_id" value="{{ request('service_id') }}">
@@ -328,60 +341,119 @@
         });
     </script>
     <script src="https://js.stripe.com/v3/"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Stripe and Elements
-            const stripe = Stripe('{{ env('STRIPE_KEY') }}');
-            const elements = stripe.elements();
-            const card = elements.create('card');
-            card.mount('#card-element');
+    @if(request('checkout_type') == 'appointment')
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize Stripe and Elements
+                const stripe = Stripe('{{ env('STRIPE_KEY') }}');
+                const elements = stripe.elements();
+                const card = elements.create('card');
+                card.mount('#card-element');
 
-            // Handle real-time validation errors on the card Element.
-            card.on('change', function(event) {
-                const displayError = document.getElementById('card-errors');
-                if (event.error) {
-                    displayError.textContent = event.error.message;
-                } else {
-                    displayError.textContent = '';
-                }
+                // Handle real-time validation errors on the card Element.
+                card.on('change', function(event) {
+                    const displayError = document.getElementById('card-errors');
+                    if (event.error) {
+                        displayError.textContent = event.error.message;
+                    } else {
+                        displayError.textContent = '';
+                    }
+                });
+
+                // Listen for the payment method form submission
+                $('#bookingForm').on('submit', function(e) {
+
+                    e.preventDefault();
+
+                    const method = $('input[name="gateway"]:checked').val();
+                    if (method === 'stripe') {
+                        // Open the Stripe modal
+                        $('#stripeCard').removeClass('d-none');
+
+                    } else if (method === 'paypal') {
+                        // Process other payment methods (e.g. redirect to PayPal)
+                        $('#stripeCard').addClass('d-none');
+                        $('#bookingForm')[0].submit();
+                    }
+                });
+
+                // Handle the Stripe payment form submission inside the modal
+                const stripeForm = document.getElementById('bookingForm');
+                stripeForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    // Create a Stripe token
+                    const {token, error} = await stripe.createToken(card);
+                    if (error) {
+                        // Display error in the card-errors element
+                        document.getElementById('card-errors').textContent = error.message;
+                    } else {
+                        // Append the token to the form and submit to Laravel
+                        let hiddenInput = document.createElement('input');
+                        hiddenInput.setAttribute('type', 'hidden');
+                        hiddenInput.setAttribute('name', 'stripeToken');
+                        hiddenInput.setAttribute('value', token.id);
+                        stripeForm.appendChild(hiddenInput);
+                        stripeForm.submit();
+                    }
+                });
             });
+        </script>
+    @else
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Initialize Stripe and Elements
+                const stripe = Stripe('{{ env('STRIPE_KEY') }}');
+                const elements = stripe.elements();
+                const card = elements.create('card');
+                card.mount('#card-element');
 
-            // Listen for the payment method form submission
-            $('#bookingForm').on('submit', function(e) {
+                // Handle real-time validation errors on the card Element.
+                card.on('change', function(event) {
+                    const displayError = document.getElementById('card-errors');
+                    if (event.error) {
+                        displayError.textContent = event.error.message;
+                    } else {
+                        displayError.textContent = '';
+                    }
+                });
 
-                e.preventDefault();
+                // Listen for the payment method form submission
+                $('#checkoutForm').on('submit', function(e) {
 
-                const method = $('input[name="gateway"]:checked').val();
-                if (method === 'stripe') {
-                    // Open the Stripe modal
-                    $('#stripeCard').removeClass('d-none');
+                    e.preventDefault();
 
-                } else if (method === 'paypal') {
-                    // Process other payment methods (e.g. redirect to PayPal)
-                    $('#stripeCard').addClass('d-none');
-                    $('#checkoutForm')[0].submit();
-                }
+                    const method = $('input[name="gateway"]:checked').val();
+                    if (method === 'stripe') {
+                        // Open the Stripe modal
+                        $('#stripeCard').removeClass('d-none');
+
+                    } else if (method === 'paypal') {
+                        // Process other payment methods (e.g. redirect to PayPal)
+                        $('#stripeCard').addClass('d-none');
+                        $('#checkoutForm')[0].submit();
+                    }
+                });
+
+                // Handle the Stripe payment form submission inside the modal
+                const stripeForm = document.getElementById('checkoutForm');
+                stripeForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    // Create a Stripe token
+                    const {token, error} = await stripe.createToken(card);
+                    if (error) {
+                        // Display error in the card-errors element
+                        document.getElementById('card-errors').textContent = error.message;
+                    } else {
+                        // Append the token to the form and submit to Laravel
+                        let hiddenInput = document.createElement('input');
+                        hiddenInput.setAttribute('type', 'hidden');
+                        hiddenInput.setAttribute('name', 'stripeToken');
+                        hiddenInput.setAttribute('value', token.id);
+                        stripeForm.appendChild(hiddenInput);
+                        stripeForm.submit();
+                    }
+                });
             });
-
-            // Handle the Stripe payment form submission inside the modal
-            const stripeForm = document.getElementById('bookingForm');
-            stripeForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                // Create a Stripe token
-                const {token, error} = await stripe.createToken(card);
-                if (error) {
-                    // Display error in the card-errors element
-                    document.getElementById('card-errors').textContent = error.message;
-                } else {
-                    // Append the token to the form and submit to Laravel
-                    let hiddenInput = document.createElement('input');
-                    hiddenInput.setAttribute('type', 'hidden');
-                    hiddenInput.setAttribute('name', 'stripeToken');
-                    hiddenInput.setAttribute('value', token.id);
-                    stripeForm.appendChild(hiddenInput);
-                    stripeForm.submit();
-                }
-            });
-        });
-    </script>
+        </script>
+    @endif
 @endpush

@@ -170,6 +170,7 @@
                             <form action="{{ route('checkout', ['checkout_type' => 'appointment']) }}" method="GET" class="form-inline">
                                 @csrf
                                 <input type="hidden" name="service_id" value="{{ $service->id }}">
+                                <input type="hidden" name="checkout_type" value="appointment">
                                 <button type="submit" class="btn-default">Book Appointment <i class="fa-solid fa-calendar"></i></button>
                             </form>                            @auth
                                 <a class="btn-default btn-highlighted" data-bs-toggle="modal" href="#reviewModal" role="button">Make Review</a>

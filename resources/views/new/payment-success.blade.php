@@ -17,7 +17,6 @@
                                     <div style="position: relative; display: inline-block; transform: translate(0px, 0px); opacity: 1;">m</div>
                                     <div style="position: relative; display: inline-block; transform: translate(0px, 0px); opacity: 1;">e</div>
                                     <div style="position: relative; display: inline-block; transform: translate(0px, 0px); opacity: 1;">n</div>
-                                    <div style="position: relative; display: inline-block; transform: translate(0px, 0px); opacity: 1;">e</div>
                                     <div style="position: relative; display: inline-block; transform: translate(0px, 0px); opacity: 1;">t</div>
 
                                 </div>
@@ -67,7 +66,6 @@
                                         <div style="position: relative; display: inline-block; transform: translate(0px, 0px); opacity: 1;">m</div>
                                         <div style="position: relative; display: inline-block; transform: translate(0px, 0px); opacity: 1;">e</div>
                                         <div style="position: relative; display: inline-block; transform: translate(0px, 0px); opacity: 1;">n</div>
-                                        <div style="position: relative; display: inline-block; transform: translate(0px, 0px); opacity: 1;">e</div>
                                         <div style="position: relative; display: inline-block; transform: translate(0px, 0px); opacity: 1;">t</div>
 
                                     </div>

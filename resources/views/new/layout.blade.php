@@ -159,7 +159,7 @@
                                     @endforeach
                                     <li class="d-flex align-items-center justiffy-content-between">
                                         <a href="{{ route('cart') }}" class="btn-default text-white">Cart</a>
-                                        <a href="{{ route('checkout') }}" class="btn-default text-white">Checkout</a>
+                                        <a href="{{ route('checkout', ['checkout_type' => 'products_order']) }}" class="btn-default text-white">Checkout</a>
                                     </li>
                                 </ul>
                             </li>

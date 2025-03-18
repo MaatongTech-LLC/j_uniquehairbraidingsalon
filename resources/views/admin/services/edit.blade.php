@@ -63,7 +63,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="duration">Duration</label>
-                                    <input type="time" value="{{ $service->duration }}" name="duration" id="duration" class="form-control" placeholder="Ex: 2:30" required>
+                                    <input type="text" name="duration" id="duration" class="form-control html-duration-picker" data-hide-seconds data-duration="{{ '00:'.$service->duration }}" placeholder="{{ $service->duration }}" required>
                                     @error('duration')
                                     <div class="invalid-feedback">
                                         {{ $message }}
@@ -115,4 +115,12 @@
 @endsection
 
 @push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/html-duration-picker@latest/dist/html-duration-picker.min.js"></script>
+    <script>
+
+        $(document).ready(function() {
+            $('#duration').val('{{ \Illuminate\Support\Carbon::parse($service->duration)->format('H:i') }}');
+        });
+
+    </script>
 @endpush
