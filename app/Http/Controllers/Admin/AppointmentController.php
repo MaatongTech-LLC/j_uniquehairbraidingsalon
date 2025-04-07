@@ -5,8 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Appointment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Notifications\BookingCancelled;
+use App\Notifications\BookingCompleted;
+use App\Notifications\BookingConfirmed;
 use App\DataTables\AppointmentsDataTable;
+use Illuminate\Support\Facades\Notification;
 
 class AppointmentController extends Controller
 {
@@ -48,9 +53,32 @@ class AppointmentController extends Controller
     public function changeStatus(Request $request, $id)
     {
         $appointment = Appointment::findOrFail($id);
+        
+        $oldStatus = $appointment->status;
+        $newStatus = $request->status;
+
+  
+    // Send notifications based on status change
+        if ($oldStatus !== $newStatus) {
+            
+            switch ($newStatus) {
+                case 'confirmed':
+                    Notification::route('mail', $appointment->user->email)->notify(new BookingConfirmed($appointment));
+                    break;
+                case 'completed':
+                    Notification::route('mail', $appointment->user->email)->notify(new BookingCompleted($appointment));
+                    break;
+                case 'cancelled':
+                    Notification::route('mail', $appointment->user->email)->notify(new BookingCancelled($appointment));
+                    break;
+            }
+        }
+
         $appointment->status = $request->status;
         $appointment->save();
         
-        return redirect()->back()->with('success', 'Appointment status changed');
+        toast('Booking status updated successfully!', 'success');
+
+        return redirect()->back();
     }
 }

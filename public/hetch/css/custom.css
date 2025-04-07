@@ -3708,7 +3708,9 @@ header.main-header .header-sticky.active{
 	text-align: center;
 }
 
-.contact-form-box .form-control{
+.contact-form-box .form-control,
+form .form-control,
+form .form-select{
 	font-size: 16px;
 	font-weight: 400;
 	line-height: 1.6em;
@@ -3721,7 +3723,8 @@ header.main-header .header-sticky.active{
 	background: transparent;
 }
 
-.contact-form-box .form-control::placeholder{
+.contact-form-box .form-control::placeholder,
+form .form-control::placeholder {
 	color: var(--text-color);
 }
 

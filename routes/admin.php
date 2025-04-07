@@ -6,6 +6,7 @@ use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AppointmentController;
@@ -72,6 +73,10 @@ Route::group(['prefix' => 'administration', 'middleware' => [CustomAuth::class, 
     // Payments routes
     Route::get('/payments', [PaymentController::class, 'index'])->name('admin.payments.index');
     Route::get('/payments/{id}', [PaymentController::class, 'show'])->name('admin.payments.show');
+
+    Route::get('/profile', [ProfileController::class, 'show'])->name('admin.profile.show');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('admin.profile.update');
+
 });
 
 

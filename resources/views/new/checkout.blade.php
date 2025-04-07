@@ -99,12 +99,17 @@
                                     </div>
                                     <div class="col-md-12">
                                         <select id="inputState" class="form-select" name="country" required>
-                                            <option selected="" disabled="">Your Country</option>
+                                            <option selected="" disabled="">Your Country*</option>
                                             <option value="USA">USA</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-12">
+                                    <div class="col-md-6">
                                         <input id="city" class="form-control" name="city" placeholder="City / Town*"
+                                               required>
+
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input id="street_address" class="form-control" name="street_address" placeholder="Street Address"
                                                required>
 
                                     </div>
@@ -114,7 +119,7 @@
                                                placeholder="State*" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control" name="postcode" value=""
+                                        <input type="text" class="form-control" name="zipcode" value=""
                                                placeholder="Zip / Postcode*" required>
                                     </div>
                                     <div class="col-md-12">
@@ -141,11 +146,21 @@
                                         </div>
                                     </div>
 
+
                                     <div id="stripeCard" class="d-none py-3">
                                         <!-- Stripe Card Element container -->
                                         <div class="form-group" id="card-element"></div>
                                         <!-- Error Message -->
                                         <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-check d-flex align-items-center">
+                                            <label for="terms" class="form-check-label">I agree to the <a href="{{ route('terms-and-conditions') }}">Terms and Conditions</a>
+                                                <input id="terms" type="checkbox" class="form-check-input d-inline-block mt-2" name="terms"
+                                                       required>
+                                            </label>
+                                        </div>
                                     </div>
 
                                     <input type="hidden" name="total_price" value="{{ $subTotal }}">
@@ -264,6 +279,15 @@
                                         <div class="form-group" id="card-element"></div>
                                         <!-- Error Message -->
                                         <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <div class="form-check d-flex align-items-center">
+                                            <label for="terms" class="form-check-label">I agree to the <a href="{{ route('terms-and-conditions') }}">Terms and Conditions</a>
+                                                <input id="terms" type="checkbox" class="form-check-input d-inline-block mt-2" name="terms"
+                                                       required>
+                                            </label>
+                                        </div>
                                     </div>
 
                                     <input type="hidden" name="service_id" value="{{ request('service_id') }}">

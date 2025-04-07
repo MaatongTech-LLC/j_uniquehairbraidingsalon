@@ -3,24 +3,30 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
+use App\Models\User;
 use App\Models\Order;
 use App\Models\Review;
+use GuzzleHttp\Client;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Service;
 use App\Mail\ContactMail;
 use App\Models\OrderItem;
 use App\Models\Appointment;
-use App\Models\User;
-use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Request;
 use App\Models\ProductCategory;
 use App\Models\ServiceCategory;
 use App\Services\PaymentService;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use App\Notifications\ClientBookingReceipt;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\AdminOrderNotification;
+use App\Notifications\ClientOrderConfirmation;
+use App\Notifications\AdminBookingNotification;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 
@@ -160,11 +166,22 @@ class HomeController extends Controller
             $paymentStatusStripe = $this->paymentService->processStripe($appointment, $request->stripeToken);
 
             if ($paymentStatusStripe === 'succeeded') {
+                 // Notify the admin
+                 Notification::route('mail', env('ADMIN_EMAIL'))->notify(new AdminBookingNotification($appointment));
+
+                 // Notify the client
+                 Notification::route('mail', $appointment->user->email)->notify(new ClientBookingReceipt($appointment));
+
                 return redirect()->route('success', $appointment->id)->with('success', 'Credit/Debit card payment successful');
             } else {
                 return redirect()->back()->with('error', 'Something went wrong while processing card payment');
             }
         }
+    }
+
+    private function formatShippingAddress($street, $city, $state, $zipcode, $country)
+    {
+        return implode(', ', array_filter([$street, $city, $state, $zipcode, $country]));
     }
 
     public function checkoutOrderPost(Request $request)
@@ -175,6 +192,11 @@ class HomeController extends Controller
             'email' => 'required|email',
             'gateway' => 'required',
             'total_price' => 'required',
+            'country' => 'required|string',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'zipcode' => 'required|string',
+            'street_address' => 'required|string',
         ]);
 
         $user = User::where('email', $validated['email'])->first();
@@ -187,10 +209,11 @@ class HomeController extends Controller
 
         }
 
-        Auth::login($user);
-        event(new Login("web", $user, false));
-
-        $cartItems = $user->cart()->with('product')->get();
+        if(Auth::check()) {
+            $cartItems = auth()->user()->cart()->with('product')->get();
+        } else {
+            $cartItems = collect(Session::get('cart', []));
+        }
 
 
         if ($cartItems->isEmpty()) {
@@ -198,20 +221,35 @@ class HomeController extends Controller
         }
 
         $totalPrice = $cartItems->sum(function ($cartItem) {
+            if(is_array($cartItem)) {
+                $cartItem = (object) $cartItem;
+           }
             return $cartItem->quantity * $cartItem->product->price;
         });
 
         DB::beginTransaction();
         try {
             // 1. Create Order
+            $shippingAddress = $this->formatShippingAddress(
+                $request->input('street_address'),
+                $request->input('city'),
+                $request->input('state'),
+                $request->input('zipcode'),
+                $request->input('country')
+            );
+
             $order = Order::create([
                 'user_id' => $user->id,
                 'total_price' => $totalPrice,
-                'status' => 'Pending', // Will change after successful payment
+                'status' => 'Pending',
+                'shipping_address' => $shippingAddress,
             ]);
 
             // 2. Insert Order Items
             foreach ($cartItems as $cartItem) {
+                if(is_array($cartItem)) {
+                    $cartItem = (object) $cartItem;
+               }
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $cartItem->product_id,
@@ -237,6 +275,13 @@ class HomeController extends Controller
                 $paymentStatusStripe = $this->paymentService->processStripe($order, $request->stripeToken);
 
                 if ($paymentStatusStripe === 'succeeded') {
+
+                     // Notify the admin
+                     Notification::route('mail', env('ADMIN_EMAIL'))->notify(new AdminOrderNotification($order));
+
+                     // Notify the client
+                     Notification::route('mail', $order->user->email)->notify(new ClientOrderConfirmation($order));
+
                     return redirect()->route('success', $order->id)->with('success', 'Credit/Debit card payment successful');
                 } else {
                     return redirect()->back()->with('error', 'Something went wrong while processing card payment');
@@ -269,10 +314,21 @@ class HomeController extends Controller
                     $payment->update(['status' => 'successful']);
                     $order = $payment->payable;
                     $order->update(['payment_status' => 'paid']);
+
+                     // Notify the admin
+                     Notification::route('mail', env('ADMIN_EMAIL'))->notify(new AdminOrderNotification($order));
+
+                     // Notify the client
+                     Notification::route('mail', $order->user->email)->notify(new ClientOrderConfirmation($order));
                 } else {
                     $payment->update(['status' => 'successful']);
                     $appointment = $payment->payable;
-                    $appointment->update(['status' => 'completed']);
+
+                    // Notify the admin
+                    Notification::route('mail', env('ADMIN_EMAIL'))->notify(new AdminBookingNotification($appointment));
+
+                    // Notify the client
+                    Notification::route('mail', $appointment->user->email)->notify(new ClientBookingReceipt($appointment));
                 }
             }
 
@@ -387,6 +443,6 @@ class HomeController extends Controller
 
     public function termsAndConditions()
     {
-        return view('terms-and-conditions');
+        return view('new.terms-and-conditions');
     }
 }
