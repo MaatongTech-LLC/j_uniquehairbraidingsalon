@@ -166,7 +166,7 @@
                                     <input type="hidden" name="total_price" value="{{ $subTotal }}">
                                     <input type="hidden" name="user_id" value="{{ auth()->id() }}">
 
-                                    <button type="submit" class="btn-default">PAY NOW</button>
+                                    <button type="submit" id="checkoutSubmitBtn" class="btn-default">PAY NOW</button>
                                 </div>
                             </div>
                         </div>
@@ -293,7 +293,7 @@
                                     <input type="hidden" name="service_id" value="{{ request('service_id') }}">
                                     <input type="hidden" name="user_id" value="{{ auth()->id() }}">
 
-                                    <button type="submit" class="btn-default">PAY NOW</button>
+                                    <button type="submit" id="checkoutSubmitBtn" class="btn-default">PAY NOW</button>
                                 </div>
                             </div>
                         </div>
@@ -384,21 +384,22 @@
                     }
                 });
 
+                $('input[name="gateway"]').change(function() {
+                    if ($(this).val() === 'stripe') {
+                        $('#stripeCard').removeClass('d-none');
+                    } else {
+                        $('#stripeCard').addClass('d-none');
+                    }
+                });
+
                 // Listen for the payment method form submission
                 $('#bookingForm').on('submit', function(e) {
 
-                    e.preventDefault();
+                    e.preventDefault(); // Empêcher la soumission réelle pour test
+                    $('#checkoutSubmitBtn').prop('disabled', true).text('Payment Processing...');
 
-                    const method = $('input[name="gateway"]:checked').val();
-                    if (method === 'stripe') {
-                        // Open the Stripe modal
-                        $('#stripeCard').removeClass('d-none');
+                    $('#bookingForm')[0].submit();
 
-                    } else if (method === 'paypal') {
-                        // Process other payment methods (e.g. redirect to PayPal)
-                        $('#stripeCard').addClass('d-none');
-                        $('#bookingForm')[0].submit();
-                    }
                 });
 
                 // Handle the Stripe payment form submission inside the modal
