@@ -40,7 +40,7 @@ class HomeController extends Controller
     }
     public function index()
     {
-        $services = Service::all();
+        $services = Service::all()->take(8);
 
 
         return view('new.home', ['services' => $services]);
